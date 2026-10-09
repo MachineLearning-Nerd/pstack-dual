@@ -1,0 +1,180 @@
+{
+  "upstream_commit": "ccb5507cec1546dc88135c1139c811e6c59115ba",
+  "missing_core_cases": [],
+  "results": [
+    {
+      "host": "claude-code",
+      "case": "bug-fix",
+      "pass": true,
+      "exit_code": 0,
+      "delegation_event_observed": true,
+      "checks": [
+        "independent CLI assertions: empty, normalization, duplicates, order, existing total"
+      ],
+      "duration_seconds": 74.4,
+      "cli_version": "2.1.293 (Claude Code)",
+      "receipt_directory": "evals/runs/20261009-165839/claude-code-bug-fix"
+    },
+    {
+      "host": "codex",
+      "case": "bug-fix",
+      "pass": true,
+      "exit_code": 0,
+      "delegation_event_observed": true,
+      "checks": [
+        "independent CLI assertions: empty, normalization, duplicates, order, existing total"
+      ],
+      "duration_seconds": 164.6,
+      "cli_version": "codex-cli 0.162.0",
+      "native_spawn_receipts": [
+        {
+          "task_name": "implement_tags",
+          "fork_turns": "none"
+        },
+        {
+          "task_name": "review_tags",
+          "fork_turns": "none"
+        }
+      ],
+      "receipt_directory": "evals/runs/20261009-165839/codex-bug-fix"
+    },
+    {
+      "host": "claude-code",
+      "case": "feature",
+      "pass": true,
+      "exit_code": 0,
+      "delegation_event_observed": true,
+      "checks": [
+        "independent CLI assertions: empty, normalization, duplicates, order, existing total"
+      ],
+      "duration_seconds": 63.7,
+      "cli_version": "2.1.293 (Claude Code)",
+      "receipt_directory": "evals/runs/20261009-165839/claude-code-feature"
+    },
+    {
+      "host": "codex",
+      "case": "feature",
+      "pass": true,
+      "exit_code": 0,
+      "delegation_event_observed": true,
+      "checks": [
+        "independent CLI assertions: empty, normalization, duplicates, order, existing total"
+      ],
+      "duration_seconds": 187.7,
+      "cli_version": "codex-cli 0.162.0",
+      "native_spawn_receipts": [
+        {
+          "task_name": "implement_tag_count"
+        },
+        {
+          "task_name": "review_tag_count"
+        }
+      ],
+      "receipt_directory": "evals/runs/20261009-165839/codex-feature"
+    },
+    {
+      "host": "claude-code",
+      "case": "investigation",
+      "pass": true,
+      "exit_code": 0,
+      "delegation_event_observed": false,
+      "checks": [
+        "project files unchanged",
+        "correct source-grounded total and normalization explanation"
+      ],
+      "duration_seconds": 28.2,
+      "cli_version": "2.1.293 (Claude Code)",
+      "receipt_directory": "evals/runs/20261009-165328/claude-code-investigation"
+    },
+    {
+      "host": "codex",
+      "case": "investigation",
+      "pass": true,
+      "exit_code": 0,
+      "delegation_event_observed": false,
+      "checks": [
+        "project files unchanged",
+        "correct source-grounded total and normalization explanation"
+      ],
+      "duration_seconds": 50.3,
+      "cli_version": "codex-cli 0.162.0",
+      "receipt_directory": "evals/runs/20261009-165328/codex-investigation"
+    },
+    {
+      "host": "claude-code",
+      "case": "native-delegation",
+      "pass": true,
+      "exit_code": 0,
+      "delegation_event_observed": true,
+      "checks": [
+        "project files unchanged",
+        "read-only delegate returned the source symbol",
+        "explicit native model and effort request observed"
+      ],
+      "duration_seconds": 28.1,
+      "cli_version": "2.1.293 (Claude Code)",
+      "receipt_directory": "evals/runs/20261009-170858/claude-code-native-delegation"
+    },
+    {
+      "host": "codex",
+      "case": "native-delegation",
+      "pass": true,
+      "exit_code": 0,
+      "delegation_event_observed": true,
+      "native_spawn_receipts": [
+        {
+          "task_name": "tag_normalization_reader",
+          "fork_turns": "none",
+          "model": "gpt-6.1-sol",
+          "reasoning_effort": "high"
+        }
+      ],
+      "checks": [
+        "project files unchanged",
+        "read-only delegate returned the source symbol",
+        "explicit native model and effort request observed"
+      ],
+      "duration_seconds": 84.2,
+      "cli_version": "codex-cli 0.162.0",
+      "receipt_directory": "evals/runs/20261009-170613/codex-native-delegation"
+    },
+    {
+      "host": "claude-code",
+      "case": "review",
+      "pass": true,
+      "exit_code": 0,
+      "delegation_event_observed": true,
+      "checks": [
+        "project files unchanged",
+        "both seeded defects identified"
+      ],
+      "duration_seconds": 58.9,
+      "cli_version": "2.1.293 (Claude Code)",
+      "receipt_directory": "evals/runs/20261009-165839/claude-code-review"
+    },
+    {
+      "host": "codex",
+      "case": "review",
+      "pass": true,
+      "exit_code": 0,
+      "delegation_event_observed": true,
+      "checks": [
+        "project files unchanged",
+        "both seeded defects identified"
+      ],
+      "duration_seconds": 88.2,
+      "cli_version": "codex-cli 0.162.0",
+      "native_spawn_receipts": [
+        {
+          "task_name": "review_arm_1",
+          "fork_turns": "none"
+        },
+        {
+          "task_name": "review_arm_2",
+          "fork_turns": "none"
+        }
+      ],
+      "receipt_directory": "evals/runs/20261009-165839/codex-review"
+    }
+  ]
+}
