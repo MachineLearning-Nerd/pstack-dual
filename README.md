@@ -12,6 +12,14 @@ release supports investigation, bug fixes, features, and read-only code review.
 It includes upstream principles and the deslop, control-cli, and control-ui
 dependencies from the same Cursor source commit.
 
+## Thank you, poteto
+
+Thank you to [Lauren Tan (poteto)](https://github.com/poteto) for creating
+[pstack](https://github.com/cursor/plugins/tree/main/pstack) and sharing its
+engineering workflows under the MIT license. Her work is the foundation of this
+project. This derivative brings those workflows to Codex and Claude Code while
+preserving the original attribution and making our adaptations explicit.
+
 ## Install in a project
 
 Requires Python 3.11+ and whichever coding CLI you use. No Python dependencies.
