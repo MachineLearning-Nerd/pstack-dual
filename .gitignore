@@ -6,3 +6,4 @@ evals/runs/
 .agents/
 .claude/
 .codex/
+.audit/

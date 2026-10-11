@@ -8,7 +8,9 @@ description: Review a branch, working diff, or named files for reachable defects
 
 Read [pstack-harness](../pstack-harness/SKILL.md) before using this workflow.
 Its native-tool, role-config, scope, and permission contract takes precedence over
-backend-specific examples below. Read only the references needed for this task.
+backend-specific examples below. Every delegate inherits the current chat's model;
+never pass a model override, including when an imported example requests one.
+Read only the references needed for this task.
 
 # Code review
 
@@ -19,7 +21,8 @@ Do not checkout, stage, fix, commit, or publish anything in a review request.
 
 Use independent reviewers when available, one bounded review per configured
 `interrogate reviewers` arm. Every arm receives the same artifact and scope, with
-its own context. State whether the actual panel is same-model or diverse-model.
+its own context and inherits the current chat's model. Label the panel independent
+same-model review; do not claim model diversity.
 Consolidate findings, confirm reachable behavior against source or a safe repro,
 and reject speculation. A command failure or missing tool is not a clean verdict.
 

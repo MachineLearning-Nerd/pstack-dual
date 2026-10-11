@@ -110,10 +110,15 @@ def resolve(host: str, project: Path, role: str, user_root: Path | None = None) 
         entries = [{"model": "inherit-parent", "effort": "inherit-parent"}] * (2 if role in PANELS else 1)
     elif not isinstance(entries, list):
         entries = [entries]
-    return [{"host": host, "role": role, "arm": i,
-             "model": None if entry.get("model", "inherit-parent") in INHERIT else entry["model"],
-             "effort": None if entry.get("effort", "inherit-parent") in INHERIT else entry["effort"],
-             "source": source} for i, entry in enumerate(entries, 1)]
+    arms = []
+    for i, entry in enumerate(entries, 1):
+        arm = {"host": host, "role": role, "arm": i, "model": None,
+               "effort": None if entry.get("effort", "inherit-parent") in INHERIT else entry["effort"],
+               "source": source}
+        if entry.get("model", "inherit-parent") not in INHERIT:
+            arm["ignored_model"] = entry["model"]
+        arms.append(arm)
+    return arms
 
 
 def native_agents(root: Path, host: str) -> dict[str, bytes]:
@@ -174,12 +179,12 @@ def installation_plan(root: Path, hosts: list[str]) -> dict[str, bytes | str]:
     for path in sorted(source.rglob("*")):
         if path.is_file() and "__pycache__" not in path.parts and path.suffix != ".pyc":
             plan[f".pstack-dual/bundle/skills/{path.relative_to(source)}"] = path.read_bytes()
-    docs = source.parent / "docs/guide"
-    if docs.exists():
-        for path in sorted(docs.rglob("*")):
+    for relative in ("docs/guide", "automations", "assets"):
+        directory = source.parent / relative
+        for path in sorted(directory.rglob("*")):
             if path.is_file():
-                plan[f".pstack-dual/bundle/docs/guide/{path.relative_to(docs)}"] = path.read_bytes()
-    for relative in ("README.md", "LICENSE", "THIRD_PARTY_NOTICES.md", "docs/PORTING.md", "docs/VERIFICATION.md", "docs/UPSTREAM.md"):
+                plan[f".pstack-dual/bundle/{relative}/{path.relative_to(directory)}"] = path.read_bytes()
+    for relative in ("README.md", "LICENSE", "THIRD_PARTY_NOTICES.md", "docs/PORTING.md", "docs/VERIFICATION.md", "docs/UPSTREAM.md", "docs/PARITY.md"):
         path = source.parent / relative
         if path.is_file():
             plan[f".pstack-dual/bundle/{relative}"] = path.read_bytes()
@@ -296,6 +301,26 @@ def validate_bundle() -> dict[str, Any]:
         names.add(name_match[1])
         if not (path.parent / "LICENSE").is_file():
             raise ValueError(f"missing attribution: {path}")
+    index = source / "poteto-mode/SKILL.md"
+    index_text = index.read_text()
+    for heading, prefix, suffix in (("Principles", "../principle-", "/SKILL.md"),
+                                     ("Playbooks", "playbooks/", ".md")):
+        section = re.search(rf"^## {heading}\n(.*?)(?=^## |\Z)", index_text, re.M | re.S)
+        if not section:
+            raise ValueError(f"missing {heading} index: {index}")
+        for title, entry in re.findall(r"^- \*\*([^*]+)\*\*(.*)$", section[1], re.M):
+            slug = re.sub(r"\s+", "-", re.sub(r"[^a-z0-9\s-]", "", title.lower()))
+            target = prefix + slug + suffix
+            if heading == "Principles":
+                explicit = re.search(r"\(\*\*(principle-[a-z0-9-]+)\*\*\)", entry)
+                if explicit:
+                    target = "../" + explicit[1] + "/SKILL.md"
+            else:
+                explicit = re.search(r"`(playbooks/[^`]+\.md)`", entry)
+                if explicit:
+                    target = explicit[1]
+            if not (index.parent / target).is_file():
+                raise ValueError(f"broken indexed reference {target}: {index}")
     for path in source.rglob("*.md"):
         text = path.read_text()
         if re.search(r"~?/\.cursor/|grok-\d|claude-opus-\d", text):

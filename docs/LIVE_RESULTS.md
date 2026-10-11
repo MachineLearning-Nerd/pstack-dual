@@ -1,6 +1,8 @@
 # Live evaluation results
 
 Actual CLI runs; no simulated agent results.
+These receipts use the earlier pstack 0.15.15 source. They do not verify the
+updated 0.15.17 prompts or ketchup. No new live evaluation was run for that update.
 
 | Host | Case | Result | Seconds | Native delegation observed |
 | --- | --- | --- | --- | --- |

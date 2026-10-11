@@ -35,7 +35,9 @@ Both hosts are installed by default. To select one, add `--agents codex` or
 The installer copies a self-contained payload into `.pstack-dual/bundle`, links
 skills into `.agents/skills` for Codex and `.claude/skills` for Claude, and writes
 native agents under `.codex/agents` and `.claude/agents`. It does not change host
-configuration, permissions, credentials, or user instructions. Conflicts fail
+configuration, permissions, credentials, or user instructions. Codex automatically
+discovers `.agents/skills`, including symlinked skills, so no duplicate installation
+in `.codex/skills` is needed. Conflicts fail
 before writing; reruns update only unmodified installer-managed files.
 
 Start a fresh CLI session in the project and inspect its live agent catalog.
@@ -51,7 +53,7 @@ In Codex:
 $poteto-mode Reproduce the duplicate-job bug, fix its root cause, and verify it.
 $poteto-mode Add CSV export and verify its output through the CLI.
 $pstack-review Review this branch against main. Remain read-only.
-$setup-pstack Check this project's pstack setup and model choices.
+$setup-pstack Check this project's pstack setup, efforts, and panel size.
 ```
 
 In Claude Code, use `/poteto-mode`, `/pstack-review`, and `/setup-pstack` instead.
@@ -59,21 +61,23 @@ You can also explicitly use `how`, `architect`, or `interrogate` for focused wor
 Re-invoke the mode for a new task or after a session handoff. Upstream's custom
 mode frontmatter is a Cursor feature; it does not imply persistent host behavior.
 
-Models and efforts inherit the session by default. Panels keep two independent
-arms, labeled same-model unless the actual models differ. Native agent roles
+Every delegate uses the current chat's model. Model selection stays under your
+control in the chat; legacy role model settings are ignored and reported by the
+resolver. Efforts inherit unless configured. Panels keep two independent
+arms, labeled independent same-model review. Native agent roles
 include poteto-agent, pstack-reviewer, and comment-sicko. Claude also gets effort
-agents for written per-delegate efforts. Hosts use their own provider's models;
-Claude and Codex do not automatically call each other.
+agents for written per-delegate efforts. Claude and Codex do not automatically
+call each other.
 
 ```sh
 python3 tools/pstack.py config-init --project /absolute/path/to/project
 python3 tools/pstack.py resolve --host codex --project /absolute/path/to/project --role bug-fix
 ```
 
-Edit `.pstack-dual/models.json` using the
+Configure effort and panel size in `.pstack-dual/models.json` using the
 [model schema and example](skills/pstack-harness/references/models.md), then run
 `validate-config --file /absolute/path/to/project/.pstack-dual/models.json`.
-Confirm model availability with the actual host. To install at user scope,
+Use `inherit-parent` for every model field. To install at user scope,
 explicitly target your home directory; this can affect every project and may
 conflict with existing skills, so project scope is recommended first.
 
@@ -97,6 +101,10 @@ wrappers contain machine-local absolute paths. Regenerate wrappers on each machi
 
 The immutable upstream snapshot and commit are recorded in `upstream.lock.json`.
 Edit `overrides/` or `tools/build.py`, then regenerate the adapted bundle.
+The current source is pstack 0.15.17. All 52 original skills are included, with
+portable overrides for the hosts. See [the complete comparison](docs/PARITY.md)
+for workflow differences and decisions. Use `$ketchup` in Codex or `/ketchup`
+in Claude to catch up on the current chat and pending decisions.
 See [porting decisions](docs/PORTING.md), [verification](docs/VERIFICATION.md),
 and [upstream updates](docs/UPSTREAM.md). Live evaluation is explicit:
 
@@ -112,7 +120,8 @@ Logs are local under `evals/runs/` and are not committed.
 Advanced orchestration and overnight workflows are preserved as an experimental
 library, not part of the verified first-release support claim. The historical
 upstream guide is reference material; this README and the native harness contract
-govern installation and execution here. No bot automations are registered.
+govern installation and execution here. Benny's files are included as a dormant
+Cursor reference pack. No bot automations are registered or enabled.
 
 ## License
 

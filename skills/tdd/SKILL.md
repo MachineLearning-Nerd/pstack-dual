@@ -9,7 +9,9 @@ disable-model-invocation: true
 
 Read [pstack-harness](../pstack-harness/SKILL.md) before using this workflow.
 Its native-tool, role-config, scope, and permission contract takes precedence over
-backend-specific examples below. Read only the references needed for this task.
+backend-specific examples below. Every delegate inherits the current chat's model;
+never pass a model override, including when an imported example requests one.
+Read only the references needed for this task.
 
 # TDD Bug Fix
 

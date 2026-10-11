@@ -37,6 +37,10 @@ delegation in each host. Installed payload validation and all 11 rendered native
 agent definitions were checked from a separate temporary installation. The pinned
 upstream update command was exercised without changing the selected source version.
 
+Those live receipts were recorded for the 0.15.15 source. The 0.15.17 update
+uses package and unit checks; no new live result or unchanged agent behavior is
+implied. See [the source comparison](PARITY.md) for the remaining differences.
+
 When evaluating cases in separate runs, aggregate their saved receipts with:
 
 ```sh
@@ -44,6 +48,9 @@ python3 tools/report_evaluations.py --runs evals/runs/<run-1> evals/runs/<run-2>
 ```
 
 Use only actual completed run directories. The aggregator refuses missing inputs.
-For the optional identity-setting test, run evaluate.py with
-`--cases native-delegation`. It validates explicit model/effort arguments rather
-than inferring identity from an agent's prose.
+For the optional inheritance test, run evaluate.py with
+`--cases native-delegation`. It checks that native calls omit model overrides
+and request the configured effort. It requires a matching completed child state
+for Codex or a successful foreground agent result for Claude. A launch event or
+the parent's prose alone does not establish completed independent work.
+The older model-selection receipts do not verify this current-chat policy.

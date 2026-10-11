@@ -11,7 +11,7 @@ import shutil
 import tempfile
 
 ROOT = Path(__file__).resolve().parent.parent
-ADAPTER = """\n## Host compatibility\n\nRead [pstack-harness](../pstack-harness/SKILL.md) before using this workflow.\nIts native-tool, role-config, scope, and permission contract takes precedence over\nbackend-specific examples below. Read only the references needed for this task.\n\n"""
+ADAPTER = """\n## Host compatibility\n\nRead [pstack-harness](../pstack-harness/SKILL.md) before using this workflow.\nIts native-tool, role-config, scope, and permission contract takes precedence over\nbackend-specific examples below. Every delegate inherits the current chat's model;\nnever pass a model override, including when an imported example requests one.\nRead only the references needed for this task.\n\n"""
 
 
 def adapt(text: str) -> str:
@@ -32,6 +32,11 @@ def adapt(text: str) -> str:
         "readonly strips MCP": "read-only access depends on the actual host",
         "Readonly strips MCPs.": "Read-only access depends on the actual host.",
         "git show origin/main:pstack/skills/": "git show origin/main:skills/",
+        "../../agents/comment-sicko.md": "../../skills/pstack-harness/references/comment-sicko.md",
+        "A second opinion is the same prompt against a different model. Agreement is high-signal.":
+        "A second opinion is the same prompt given to a fresh agent on the current chat's model. Agreement is independent same-model evidence, not model diversity.",
+        "**interrogate** skill (multi-model adversarial)": "**interrogate** skill (independent adversarial)",
+        "for diverse-model review. Respect what the skill prescribes": "for independent same-model review. Respect what the skill prescribes",
         "**Just do it.** Use any MCP tool. Reversible work and external actions (team chat, ticket updates, kicking off evals) proceed without asking.":
         "**Act within scope.** Complete authorized reversible work. External messages and other external actions require authorization from the user's task; this skill grants none.",
     }
@@ -70,7 +75,12 @@ def generate(destination: Path) -> None:
         if path.parent.name != "pstack-harness":
             body = "\n" + ADAPTER + body.lstrip("\n")
         if path.parent.name == "poteto-mode":
-            body = body.replace("## Non-negotiables", "## Review routing\n\nA request to review a diff, branch, or PR uses playbooks/code-review.md and\npstack-review. It remains read-only and does not enter the Babysit lifecycle.\nCore feature and bug-fix playbooks in this derivative govern local completion;\nPR creation and commits require the user's requested scope.\n\n## Non-negotiables", 1)
+            body = re.sub(
+                r"\*\*Defaults for every `Task` call\.\*\*.*?(?=\n\nYou own every subagent)",
+                "**Defaults for delegation.** Use native agents with file pointers, bounded scope, and the actual host's read-only or implementation persona. Every delegate inherits the current chat's model; omit the model argument. Resolve each role through pstack-harness for effort and panel size. Legacy model selections are ignored and reported. Use background execution only when supported, and wait for actual completed results. The user controls model selection in the chat.",
+                body, count=1, flags=re.S,
+            )
+            body = body.replace("## Non-negotiables", "## Review routing\n\nA request to review a diff, branch, or PR uses playbooks/code-review.md and\npstack-review. It remains read-only and does not enter the Babysit lifecycle.\nCore feature and bug-fix playbooks govern their design gates and local completion.\nSubstantial features compare designs with architect and use arena when multiple\nimplementation shapes are valid. Bug fixes crossing a function boundary use\narchitect. The documented narrow-question and mechanical-edit shortcuts take\nprecedence over general triggers below. Every delegate uses the current chat's\nmodel. PR creation and commits require the user's requested scope.\n\n## Non-negotiables", 1)
         path.write_text("---" + header + "---\n" + body)
         license_source = ROOT / ("upstream/cursor-team-kit/LICENSE" if path.parent.name in {"deslop", "control-cli", "control-ui"} else "LICENSE")
         shutil.copyfile(license_source, path.parent / "LICENSE")
@@ -86,6 +96,11 @@ def generate(destination: Path) -> None:
     shutil.copytree(ROOT / "upstream/pstack/docs/guide", guide)
     for path in guide.rglob("*.md"):
         path.write_text("<!-- Historical upstream guide adapted for paths; see ../../PORTING.md for support status. -->\n" + adapt(path.read_text()))
+    shutil.copytree(ROOT / "upstream/pstack/assets", destination / "assets")
+    automations = destination / "automations"
+    shutil.copytree(ROOT / "upstream/pstack/automations", automations)
+    for path in automations.rglob("*.md"):
+        path.write_text("> Dormant upstream Cursor reference. pstack-dual does not register or enable this automation. Its setup requires a separate host-specific port.\n\n" + path.read_text())
     adapters = destination / "adapters"
     adapters.mkdir()
     (adapters / "README.md").write_text("Native agent definitions are rendered at install time with the destination's absolute bundled skill paths. See tools/pstack.py native_agents(). No host settings or credentials are changed.\n")
@@ -112,7 +127,7 @@ def main() -> None:
     with tempfile.TemporaryDirectory(prefix="pstack-build-") as temporary:
         out = Path(temporary)
         generate(out)
-        for relative in ("skills", "docs/guide", "adapters", "THIRD_PARTY_NOTICES.md"):
+        for relative in ("skills", "docs/guide", "assets", "automations", "adapters", "THIRD_PARTY_NOTICES.md"):
             current, expected = ROOT / relative, out / relative
             if expected.is_file():
                 if args.check:

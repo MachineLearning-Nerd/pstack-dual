@@ -10,11 +10,21 @@ Read ../pstack-harness/SKILL.md. Remain read-only when answering an investigatio
 Find the relevant entry point, callers, authoritative types, and the smallest set
 of files that establish behavior. Do not dump the whole repository into context.
 
-Delegate independent exploration slices when scope warrants it. Resolve `how
-explorer` for source discovery and `how explainer` for synthesis. A small subsystem
-may use one explorer; a direct one-file question can be answered inline with
-evidence. Brief the explorer with the question and file pointers, not a presumed
-answer. Never fabricate delegation or runtime checks.
+Answer narrow questions about one function or file directly with evidence.
+For a substantial single-module explanation, delegate a fresh read-only explainer
+using references/explainer-prompt.md without its explorer-findings section.
+Replace its synthesis premise with an instruction to explore the source and
+explain it in one pass; remove statements that prior explorers did the research.
+For work spanning subsystems, delegate two
+to four read-only explorers using references/explorer-prompt.md, with distinct
+questions and file pointers. Resolve `how explorer` for discovery and `how
+explainer` for synthesis. Every delegate inherits the current chat's model.
+
+Give a fresh explainer the explorer findings and original question. The explainer
+owns the final explanation; the lead makes only light factual or clarity edits.
+Brief researchers with questions, not presumed answers. If delegation is
+unavailable, explain the missing independent research or synthesis and answer
+from the evidence available. Never fabricate delegation or runtime checks.
 
 Explain Overview, Key Concepts, How It Works, Where Things Live, and Gotchas at
 the depth the question needs. Cite actual files and symbols. Distinguish observed

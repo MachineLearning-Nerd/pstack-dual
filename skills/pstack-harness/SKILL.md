@@ -26,16 +26,21 @@ python3 "$PSTACK_SKILLS_ROOT/pstack-harness/scripts/pstack.py" resolve --host co
 ```
 
 Use `claude-code` for Claude. The result lists arms with `model` and `effort`;
-null means inherit. Defaults inherit the session and preserve panel arm count.
-Project `.pstack-dual/models.json` overrides the user's file role by role.
-Different efforts on the same model do not establish model diversity. Label a
-same-model panel as independent same-model review. Never claim cross-provider
-execution unless that execution actually happened.
+null means inherit. Every delegate uses the current chat's model. Never pass a
+model override, choose a different role model, or change models after a rejected
+spawn. This policy supersedes model-selection examples in imported workflows.
+The user controls the model by selecting it in the chat.
+
+Project `.pstack-dual/models.json` overrides user settings for effort and panel
+size. Legacy explicit model settings remain readable but are ignored; the
+resolver reports them as `ignored_model`. Preserve separate panel arms and label
+them independent same-model review. Different efforts do not establish model
+diversity. Do not claim cross-provider execution.
 
 ## Claude Code
 
-Use the live Agent/delegation tool (older releases call it Task). `model` is a
-Claude alias or Claude model ID. Use `poteto-agent` when loaded for implementation;
+Use the live Agent/delegation tool (older releases call it Task). Omit its `model`
+argument so the delegate inherits the chat. Use `poteto-agent` when loaded for implementation;
 otherwise brief a general-purpose agent to read poteto-mode and the matched
 playbook at their absolute paths. For read-only reviews, use `pstack-reviewer`
 when loaded; it has read-only tools. Resolve names from the live agent catalog.
@@ -45,9 +50,9 @@ Use the host's supported background/wait mechanisms. Do not invent fields.
 
 ## Codex
 
-Use native `spawn_agent` when available. Set `fork_turns: "none"` when setting
-`model` or `reasoning_effort`; a full-history fork inherits the parent's identity.
-Pass the resolved effort only when supported. Set the custom agent type when the
+Use native `spawn_agent` when available and omit `model`. Set `fork_turns: "none"`
+when setting `reasoning_effort`; a full-history fork inherits the parent's identity.
+Pass the resolved effort only when supported without changing the model. Set the custom agent type when the
 live tool exposes it; otherwise include the persona and absolute skill paths in
 the brief. Use the host's message, wait, and close capabilities as exposed.
 For a read-only reviewer, select `pstack-reviewer` if loaded and always state the
@@ -62,7 +67,10 @@ spawn when supported; otherwise use the bounded separate-process fallback.
 ## Isolation and fallbacks
 
 Native subagents are preferred. If unavailable, a separate `codex exec` or
-`claude -p` process may implement a bounded brief with the same permission scope.
+`claude -p` process may implement a bounded brief only when the actual parent
+model identity is known and can be selected unchanged, with the same permission
+scope. A CLI default or guessed model is insufficient. If that identity cannot
+be established, report unavailable delegation and continue inline within scope.
 Do not bypass permission checks to make it work. Report unavailable independent
 verification if neither mechanism works; inline self-review is not independent.
 Each concurrent writer gets its own git worktree. Record its path and base commit.

@@ -3,6 +3,8 @@ from __future__ import annotations
 import importlib.util
 import json
 from pathlib import Path
+import re
+import shutil
 import tempfile
 import tomllib
 import unittest
@@ -26,6 +28,28 @@ class RuntimeTests(unittest.TestCase):
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(data))
 
+    def test_generated_bundle_indexes_and_explicit_exceptions_validate(self) -> None:
+        self.assertEqual(pstack.validate_bundle()["references"], "valid")
+        for target in ("principle-sequence-verifiable-units/SKILL.md",
+                       "poteto-mode/playbooks/authoring-a-skill.md",
+                       "poteto-mode/playbooks/multi-phase-plan.md",
+                       "poteto-mode/playbooks/worktree-cleanup.md"):
+            with self.subTest(target=target):
+                self.assertTrue((ROOT / "skills" / target).is_file())
+
+    def test_missing_indexed_principle_and_playbook_fail_validation(self) -> None:
+        bundle = self.root / "skills"
+        shutil.copytree(ROOT / "skills", bundle)
+        for target in ("principle-laziness-protocol/SKILL.md",
+                       "poteto-mode/playbooks/investigation.md"):
+            path = bundle / target
+            original = path.read_bytes()
+            path.unlink()
+            with self.subTest(target=target), patch.object(pstack, "skills_root", return_value=bundle):
+                with self.assertRaisesRegex(ValueError, "broken indexed reference"):
+                    pstack.validate_bundle()
+            path.write_bytes(original)
+
     def test_session_defaults_keep_two_panel_arms(self) -> None:
         arms = pstack.resolve("codex", self.root, "interrogate reviewers", self.root / "user")
         self.assertEqual([arm["arm"] for arm in arms], [1, 2])
@@ -36,8 +60,42 @@ class RuntimeTests(unittest.TestCase):
         self.config(user, {"version": 1, "codex": {"roles": {"feature": {"model": "gpt-6-sol", "effort": "high"}}},
                            "claude-code": {"roles": {"feature": {"model": "sonnet"}}}})
         self.config(self.root, {"version": 1, "codex": {"roles": {"feature": {"model": "gpt-6.1-sol", "effort": "medium"}}}})
-        self.assertEqual(pstack.resolve("codex", self.root, "feature", user)[0]["model"], "gpt-6.1-sol")
-        self.assertEqual(pstack.resolve("claude-code", self.root, "feature", user)[0]["model"], "sonnet")
+        self.assertEqual(pstack.resolve("codex", self.root, "feature", user), [
+            {"host": "codex", "role": "feature", "arm": 1, "model": None,
+             "effort": "medium", "source": "project:feature", "ignored_model": "gpt-6.1-sol"}])
+        self.assertEqual(pstack.resolve("claude-code", self.root, "feature", user), [
+            {"host": "claude-code", "role": "feature", "arm": 1, "model": None,
+             "effort": None, "source": "user:feature", "ignored_model": "sonnet"}])
+
+    def test_legacy_defaults_preserve_effort_and_panel_count(self) -> None:
+        self.config(self.root, {"version": 1, "codex": {"default": {"model": "gpt-6-sol", "effort": "max"}}})
+        for role, count in [("bug-fix", 1), ("architect runners", 2)]:
+            with self.subTest(role=role):
+                self.assertEqual(pstack.resolve("codex", self.root, role, self.root / "user"), [
+                    {"host": "codex", "role": role, "arm": arm, "model": None,
+                     "effort": "max", "source": "project:default", "ignored_model": "gpt-6-sol"}
+                    for arm in range(1, count + 1)])
+
+    def test_legacy_panel_preserves_distinct_arms_and_efforts(self) -> None:
+        user = self.root / "user"
+        self.config(user, {"version": 1, "claude-code": {"panels": {"interrogate reviewers": [
+            {"model": "sonnet", "effort": "high"}, {"model": "opus", "effort": "max"},
+            {"model": "inherit-parent", "effort": "low"}]}}})
+        self.assertEqual(pstack.resolve("claude-code", self.root, "interrogate reviewers", user), [
+            {"host": "claude-code", "role": "interrogate reviewers", "arm": 1, "model": None,
+             "effort": "high", "source": "user:interrogate reviewers", "ignored_model": "sonnet"},
+            {"host": "claude-code", "role": "interrogate reviewers", "arm": 2, "model": None,
+             "effort": "max", "source": "user:interrogate reviewers", "ignored_model": "opus"},
+            {"host": "claude-code", "role": "interrogate reviewers", "arm": 3, "model": None,
+             "effort": "low", "source": "user:interrogate reviewers"}])
+
+    def test_inheritance_aliases_and_missing_models_do_not_report_ignored_models(self) -> None:
+        for entry in [{}, {"model": "auto"}, {"model": "inherit"}, {"model": "inherit-parent"}]:
+            with self.subTest(entry=entry):
+                self.config(self.root, {"version": 1, "codex": {"roles": {"feature": entry}}})
+                self.assertEqual(pstack.resolve("codex", self.root, "feature", self.root / "user"), [
+                    {"host": "codex", "role": "feature", "arm": 1, "model": None,
+                     "effort": None, "source": "project:feature"}])
 
     def test_partial_entry_does_not_borrow_effort_from_user(self) -> None:
         user = self.root / "user"
@@ -85,6 +143,24 @@ class RuntimeTests(unittest.TestCase):
         pstack.install(self.root, ["codex"])
         self.assertEqual((self.root / ".codex/agents/poteto-agent.toml").stat().st_mtime_ns, before)
         self.assertTrue((self.root / ".claude/skills/poteto-mode").is_symlink())
+
+    def test_install_preserves_reference_pack_without_activating_it(self) -> None:
+        pstack.install(self.root, list(pstack.HOSTS))
+        bundle = self.root / ".pstack-dual/bundle"
+        for target in ("automations/benny/FOR_AGENTS.md", "automations/benny/README.md",
+                       "automations/benny/skills/setup-benny/SKILL.md", "assets/logo.png",
+                       "docs/PARITY.md"):
+            with self.subTest(target=target):
+                self.assertEqual((bundle / target).read_bytes(), (ROOT / target).read_bytes())
+        for guide in (bundle / "docs/guide").rglob("*.md"):
+            for target in re.findall(r"\]\(([^)\s]+)\)", guide.read_text()):
+                if "://" in target or target.startswith(("#", "mailto:")):
+                    continue
+                with self.subTest(guide=guide.name, target=target):
+                    self.assertTrue((guide.parent / target.split("#", 1)[0]).exists())
+        self.assertFalse((self.root / ".agents/skills/setup-benny").exists())
+        self.assertFalse((self.root / ".claude/skills/setup-benny").exists())
+        self.assertFalse((self.root / ".cursor/settings.json").exists())
 
     def test_conflicts_fail_before_any_write(self) -> None:
         path = self.root / ".claude/skills/how/SKILL.md"

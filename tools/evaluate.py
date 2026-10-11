@@ -66,7 +66,7 @@ if __name__ == "__main__":
         "bug-fix": "The tags CLI emits duplicates when equivalent tags differ by case or whitespace. Reproduce with tags ' AI ' ai '' ML ml, trace the cause, fix it, and verify. Contract: strip, lowercase, remove empty strings, preserve first-occurrence order, and deduplicate normalized values. Remain within app.py and any regression tests you add; no commits or PRs.",
         "feature": "Add a tag-count CLI subcommand accepting zero or more tag strings. It prints the integer count of distinct normalized nonempty tags, reusing the existing normalization contract. Preserve tags and total commands. Verify normal, duplicate, and empty inputs. Edit only app.py and any behavioral tests you add; no commits or PRs.",
         "review": "Review the working-tree change to app.py. Identify concrete reachable correctness regressions, cite the affected function and triggering input, and obtain independent read-only review if available. Run safe commands for evidence. Do not fix, stage, commit, or change any source or tests.",
-        "native-delegation": "Read pstack-harness and resolve this project's feature role. Spawn exactly one read-only delegate with the resolved model and effort, using a fresh context. Ask it to read app.py and identify the tag normalization function, then wait for its actual completed result. On Claude, use the loaded pstack-effort-high agent and pass model sonnet. On Codex, pass model gpt-6.1-sol and reasoning_effort high with fork_turns none; use pstack-reviewer if agent_type is exposed, otherwise brief the read-only persona. This is an explicit request for those model settings. Do not edit any source or installation files. Report the function name and the actual mechanism, including any unavailable persona or effort setting.",
+        "native-delegation": "Read pstack-harness and resolve this project's feature role. Spawn exactly one read-only delegate with the resolved effort, using a fresh context and inheriting this chat's model. Omit the model argument. Ask it to read app.py and identify the tag normalization function, then wait for its actual completed result. On Claude, use the loaded pstack-effort-high agent and run it in the foreground. On Codex, pass reasoning_effort high with fork_turns none; use pstack-reviewer if agent_type is exposed, otherwise brief the read-only persona. Do not edit any source or installation files. Report the function name and the actual mechanism, including any unavailable persona or effort setting.",
     }[case]
     if case == "bug-fix":
         base = base.replace("if value and value not in result:", "if value:")
@@ -79,7 +79,7 @@ if __name__ == "__main__":
         (project / "app.py").write_text(base.replace("if value and value not in result:", "if value:").replace("sum(prices) * 9 // 10 + shipping", "(sum(prices) + shipping) * 9 // 10"))
     pstack.install(project, [host])
     if case == "native-delegation":
-        config = {"version": 1, host: {"roles": {"feature": {"model": "gpt-6.1-sol" if host == "codex" else "sonnet", "effort": "high"}}}}
+        config = {"version": 1, host: {"roles": {"feature": {"model": "inherit-parent", "effort": "high"}}}}
         (project / ".pstack-dual/models.json").write_text(json.dumps(config) + "\n")
     mention = "$pstack-review" if host == "codex" and case == "review" else "/pstack-review" if case == "review" else "$poteto-mode" if host == "codex" else "/poteto-mode"
     return mention + " " + prompt, base
@@ -175,7 +175,25 @@ def claude_agent_calls(events: str) -> list[dict[str, Any]]:
 
 def delegation_observed(events: str, host: str) -> bool:
     if host == "claude-code":
-        return bool(claude_agent_calls(events))
+        calls = set()
+        completed = set()
+        for line in events.splitlines():
+            try:
+                value = json.loads(line)
+            except ValueError:
+                continue
+            message = value.get("message")
+            if not isinstance(message, dict):
+                continue
+            content = message.get("content", [])
+            if not isinstance(content, list):
+                continue
+            for item in content:
+                if item.get("type") == "tool_use" and item.get("name") in {"Agent", "Task"} and item.get("id"):
+                    calls.add(item["id"])
+                elif item.get("type") == "tool_result" and not item.get("is_error") and item.get("tool_use_id"):
+                    completed.add(item["tool_use_id"])
+        return bool(calls & completed)
     for line in events.splitlines():
         try:
             value = json.loads(line)
@@ -185,6 +203,37 @@ def delegation_observed(events: str, host: str) -> bool:
             item = value.get("item", {})
             if item.get("type") == "collab_tool_call" and item.get("tool") == "spawn_agent" and item.get("status") == "completed" and item.get("receiver_thread_ids"):
                 return True
+    return False
+
+
+def delegation_completed(events: str, host: str) -> bool:
+    delegates = set()
+    for line in events.splitlines():
+        try:
+            value = json.loads(line)
+        except ValueError:
+            continue
+        if host == "codex":
+            item = value.get("item", {})
+            if value.get("type") != "item.completed" or item.get("type") != "collab_tool_call" or item.get("status") != "completed":
+                continue
+            if item.get("tool") == "spawn_agent":
+                delegates.update(item.get("receiver_thread_ids", []))
+            elif item.get("tool") == "wait":
+                states = item.get("agents_states", {})
+                if any(receiver in delegates and state.get("status") == "completed"
+                       for receiver, state in states.items()):
+                    return True
+        elif host == "claude-code":
+            message = value.get("message")
+            if not isinstance(message, dict) or not isinstance(message.get("content"), list):
+                continue
+            for item in message["content"]:
+                if item.get("type") == "tool_use" and item.get("name") in {"Agent", "Task"} and item.get("id"):
+                    if not item.get("input", {}).get("run_in_background"):
+                        delegates.add(item["id"])
+                elif item.get("type") == "tool_result" and not item.get("is_error") and item.get("tool_use_id") in delegates:
+                    return True
     return False
 
 
@@ -218,6 +267,24 @@ def codex_spawn_receipts(events: str, project: Path) -> list[dict[str, Any]]:
                     arguments = json.loads(payload.get("arguments", "{}"))
                     receipts.append({key: arguments[key] for key in ("task_name", "agent_type", "fork_turns", "model", "reasoning_effort") if key in arguments})
     return receipts
+
+
+def grade_native_delegation(host: str, calls: list[dict[str, Any]], completed: bool) -> str:
+    if not completed:
+        raise AssertionError("no completed native delegation observed")
+    if len(calls) != 1:
+        raise AssertionError("expected exactly one native delegate")
+    call = calls[0]
+    if "model" in call:
+        raise AssertionError("native delegate must inherit the current chat model without a model argument")
+    if host == "claude-code" and call.get("run_in_background"):
+        raise AssertionError("native evaluation requires a completed foreground Claude delegate")
+    if host == "codex":
+        if call.get("reasoning_effort") != "high" or call.get("fork_turns") != "none":
+            raise AssertionError("inherited Codex model with fresh context and high effort was not observed")
+    elif call.get("subagent_type") != "pstack-effort-high":
+        raise AssertionError("Claude's inherited-model high-effort agent was not observed")
+    return "successful native delegation omitted a model override and requested high effort"
 
 
 def run_case(host: str, case: str, run_dir: Path, timeout: int) -> dict[str, Any]:
@@ -262,20 +329,13 @@ def run_case(host: str, case: str, run_dir: Path, timeout: int) -> dict[str, Any
             record["delegation_event_observed"] = delegation_observed(events, host)
             if host == "codex":
                 record["native_spawn_receipts"] = codex_spawn_receipts(events, project)
-                record["delegation_event_observed"] |= bool(record["native_spawn_receipts"])
             if process.returncode:
                 raise AssertionError(f"CLI exit {process.returncode}; inspect local logs")
             record.update(grade(project, case, before, response))
             if case == "native-delegation":
-                if not record["delegation_event_observed"]:
-                    raise AssertionError("no native delegation call observed")
-                if host == "codex" and not any(receipt.get("model") == "gpt-6.1-sol" and receipt.get("reasoning_effort") == "high" and receipt.get("fork_turns") == "none" for receipt in record["native_spawn_receipts"]):
-                    raise AssertionError("explicit Codex model/effort was not passed to the native spawn")
-                if host == "claude-code":
-                    observed = claude_agent_calls(events)
-                    if not any(call.get("model") == "sonnet" and call.get("subagent_type") == "pstack-effort-high" for call in observed):
-                        raise AssertionError("Claude's model/effort-agent override was not observed")
-                record["checks"].append("explicit native model and effort request observed")
+                observed = record["native_spawn_receipts"] if host == "codex" else claude_agent_calls(events)
+                record["native_completion_observed"] = delegation_completed(events, host)
+                record["checks"].append(grade_native_delegation(host, observed, record["native_completion_observed"]))
         except (OSError, TimeoutError, AssertionError, ValueError, subprocess.SubprocessError) as error:
             record["pass"] = False
             record["error"] = str(error)
