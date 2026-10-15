@@ -28,6 +28,7 @@ Resolve `interrogate reviewers` and spawn one independent read-only reviewer per
 arm. Omit model overrides and use only supported effort fields. Do not supply
 the lead's suspected findings as the answer. A same-model panel is independent review, not
 model diversity. Reviewers cite files, triggers, impact, and evidence.
+Assess each brief under [the effort contract](../pstack-harness/SKILL.md#task-difficulty-and-effort).
 
 Wait for all arms or report the failed/missing arms explicitly. Confirm findings
 against the artifact, deduplicate, and report disagreement. Do not count inline

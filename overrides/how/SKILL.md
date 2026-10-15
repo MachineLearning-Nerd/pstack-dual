@@ -19,6 +19,7 @@ For work spanning subsystems, delegate two
 to four read-only explorers using references/explorer-prompt.md, with distinct
 questions and file pointers. Resolve `how explorer` for discovery and `how
 explainer` for synthesis. Every delegate inherits the current chat's model.
+Assess each brief under [the effort contract](../pstack-harness/SKILL.md#task-difficulty-and-effort).
 
 Give a fresh explainer the explorer findings and original question. The explainer
 owns the final explanation; the lead makes only light factual or clarity edits.

@@ -76,9 +76,14 @@ def generate(destination: Path) -> None:
             body = "\n" + ADAPTER + body.lstrip("\n")
         if path.parent.name == "poteto-mode":
             body = re.sub(
-                r"\*\*Defaults for every `Task` call\.\*\*.*?(?=\n\nYou own every subagent)",
+                r"^\*\*Defaults for every `Task` call\.\*\*.*?(?=\n\n|\Z)",
                 "**Defaults for delegation.** Use native agents with file pointers, bounded scope, and the actual host's read-only or implementation persona. Every delegate inherits the current chat's model; omit the model argument. Resolve each role through pstack-harness for effort and panel size. Legacy model selections are ignored and reported. Use background execution only when supported, and wait for actual completed results. The user controls model selection in the chat.",
-                body, count=1, flags=re.S,
+                body, count=1, flags=re.M | re.S,
+            )
+            body = re.sub(
+                r"^\*\*Match the model to the job\.\*\*.*?(?=\n\n|\Z)",
+                "**Match effort to the job.** Assess each delegate's task difficulty and urgency before spawning. Follow [the effort contract](../pstack-harness/SKILL.md#task-difficulty-and-effort). Use the resolved effort exactly when the host supports it; null inherits the parent. Keep the current chat's model, preserve user settings, and report unavailable effort or speed controls.",
+                body, count=1, flags=re.M | re.S,
             )
             body = body.replace("## Non-negotiables", "## Review routing\n\nA request to review a diff, branch, or PR uses playbooks/code-review.md and\npstack-review. It remains read-only and does not enter the Babysit lifecycle.\nCore feature and bug-fix playbooks govern their design gates and local completion.\nSubstantial features compare designs with architect and use arena when multiple\nimplementation shapes are valid. Bug fixes crossing a function boundary use\narchitect. The documented narrow-question and mechanical-edit shortcuts take\nprecedence over general triggers below. Every delegate uses the current chat's\nmodel. PR creation and commits require the user's requested scope.\n\n## Non-negotiables", 1)
         path.write_text("---" + header + "---\n" + body)

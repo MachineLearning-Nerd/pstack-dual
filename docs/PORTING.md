@@ -3,7 +3,7 @@
 Keep original source in upstream/ and generate adapted skill payloads. Core
 workflow overrides are explicit files; systematic substitutions are in build.py.
 This makes differences reviewable without pretending the port is byte-identical.
-The [0.15.17 comparison](PARITY.md) accounts for the original source, packaged
+The [0.15.25 comparison](PARITY.md) accounts for the original source, packaged
 content, host adaptations, and workflow choices.
 
 | Upstream assumption | Portable behavior |

@@ -13,9 +13,15 @@ or after a handoff; Cursor's persistent custom-mode controls do not apply here.
 
 For a recap of the current chat, use [ketchup](../ketchup/SKILL.md). It explains
 what happened since the user's last message and decisions still waiting on them.
+It gives a short plain-language summary and small visuals when they explain a change.
 For context across previous chats, use [recall](../recall/SKILL.md). These are
 different scopes. Ketchup stays read-only and follows [bro](../bro/SKILL.md) for
 plain language. Use `$ketchup` in Codex or `/ketchup` in Claude.
+
+Use [in-your-own-words](../in-your-own-words/SKILL.md) to restate the user's goals
+before acting. Use [sharpen](../sharpen/SKILL.md) to improve the task's framing,
+choose expert methods and an outside check, then do the work. Sharpen does not
+return a rewritten prompt or decide preferences that belong to the user.
 
 Core supported workflows are investigation (how), bug fix, feature, and read-only
 code review (pstack-review/interrogate). Principles and local verification skills

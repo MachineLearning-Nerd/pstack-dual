@@ -1,7 +1,8 @@
 ### Bug fix
 
 You own the task. Delegate bounded implementation and review; keep the evidence
-and the final decision in the lead. Read pstack-harness for native mechanics.
+and the final decision in the lead. Read pstack-harness for native mechanics and
+its [effort contract](../../pstack-harness/SKILL.md#task-difficulty-and-effort).
 
 1. Reproduce through the real entry point. Capture the failing behavior, input,
    and expected result. A missing target is unresolved, not a successful repro.

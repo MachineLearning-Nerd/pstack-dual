@@ -15,6 +15,8 @@ Read only the references needed for this task.
 
 # Poteto mode
 
+Bundled skills live at `../<name>/SKILL.md` from this file, so put this file's absolute path in every `poteto-agent` prompt.
+
 ## Review routing
 
 A request to review a diff, branch, or PR uses playbooks/code-review.md and
@@ -106,9 +108,11 @@ Read the leaf skill in full for any principle you apply. Each entry names when i
 
 ## Subagents
 
-**Use `subagent_type: "poteto-agent"` for any subagent you spawn inside a playbook step** (code-writing delegates, ad-hoc helpers). `/poteto-mode` and `poteto-agent` route through the same wrapper. Routed workflow skills (`how`, `why`, `interrogate`, `reflect`, `swarm`) set their own `subagent_type` for independent same-model review. Respect what the skill prescribes, don't override to `poteto-agent`.
+**Use `subagent_type: "poteto-agent"` for any subagent you spawn inside a playbook step** (code-writing delegates, ad-hoc helpers). The chat that receives `/poteto-mode` runs the playbook. Never spawn a `poteto-agent` to run the playbook itself. Routed workflow skills (`how`, `why`, `interrogate`, `reflect`, `swarm`) set their own `subagent_type` for independent same-model review. Respect what the skill prescribes, don't override to `poteto-agent`.
 
 **Defaults for delegation.** Use native agents with file pointers, bounded scope, and the actual host's read-only or implementation persona. Every delegate inherits the current chat's model; omit the model argument. Resolve each role through pstack-harness for effort and panel size. Legacy model selections are ignored and reported. Use background execution only when supported, and wait for actual completed results. The user controls model selection in the chat.
+
+**Match effort to the job.** Assess each delegate's task difficulty and urgency before spawning. Follow [the effort contract](../pstack-harness/SKILL.md#task-difficulty-and-effort). Use the resolved effort exactly when the host supports it; null inherits the parent. Keep the current chat's model, preserve user settings, and report unavailable effort or speed controls.
 
 You own every subagent's work. Review the diff and write your own summary, don't pass through what it said. A second opinion is the same prompt given to a fresh agent on the current chat's model. Agreement is independent same-model evidence, not model diversity.
 

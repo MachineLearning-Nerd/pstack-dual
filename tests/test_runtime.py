@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 import re
 import shutil
+import subprocess
 import tempfile
 import tomllib
 import unittest
@@ -132,6 +133,17 @@ class RuntimeTests(unittest.TestCase):
                 self.assertEqual(manifest["sandbox_mode"], "read-only")
             self.assertNotIn("model", manifest)
 
+    def test_native_claude_metadata_inherits_model_for_all_agents(self) -> None:
+        files = pstack.native_agents(self.root, "claude-code")
+        self.assertIn(".claude/agents/poteto-agent.md", files)
+        self.assertIn(".claude/agents/pstack-reviewer.md", files)
+        for path, data in files.items():
+            header = data.decode().split("---", 2)[1]
+            with self.subTest(agent=path):
+                self.assertIsNone(re.search(r"^model\s*:", header, re.M))
+        reviewer = files[".claude/agents/pstack-reviewer.md"].decode().split("---", 2)[1]
+        self.assertIn("permissionMode: plan", reviewer)
+
     def test_install_is_self_contained_and_idempotent(self) -> None:
         pstack.install(self.root, list(pstack.HOSTS))
         link = self.root / ".agents/skills/poteto-mode"
@@ -161,6 +173,78 @@ class RuntimeTests(unittest.TestCase):
         self.assertFalse((self.root / ".agents/skills/setup-benny").exists())
         self.assertFalse((self.root / ".claude/skills/setup-benny").exists())
         self.assertFalse((self.root / ".cursor/settings.json").exists())
+
+    def test_installed_validation_ignores_dependencies_but_checks_owned_references(self) -> None:
+        pstack.install(self.root, ["codex"])
+        bundle = self.root / ".pstack-dual/bundle/skills"
+        dependency = bundle / "poteto-mode/scripts/node_modules/commander/Readme.md"
+        dependency.parent.mkdir(parents=True)
+        dependency.write_text("[third-party reference](missing.md)\n")
+        with patch.object(pstack, "skills_root", return_value=bundle):
+            self.assertEqual(pstack.validate_bundle()["references"], "valid")
+            owned = bundle / "poteto-mode/references/broken.md"
+            owned.write_text("[owned reference](missing.md)\n")
+            with self.assertRaisesRegex(ValueError, "broken reference missing.md"):
+                pstack.validate_bundle()
+
+    def test_self_contained_reinstall_does_not_adopt_dependencies(self) -> None:
+        pstack.install(self.root, ["codex"])
+        bundle = self.root / ".pstack-dual/bundle/skills"
+        dependency = bundle / "poteto-mode/scripts/node_modules/commander/Readme.md"
+        dependency.parent.mkdir(parents=True)
+        dependency.write_text("unmanaged dependency")
+        destination = self.root / "other-project"
+        destination.mkdir()
+        with patch.object(pstack, "skills_root", return_value=bundle):
+            pstack.install(self.root, ["codex"])
+            pstack.install(destination, ["codex"])
+        ledger = json.loads((self.root / pstack.LEDGER).read_text())
+        self.assertNotIn(str(dependency.relative_to(self.root)), ledger["files"])
+        self.assertFalse((destination / ".pstack-dual/bundle/skills/poteto-mode/scripts/node_modules").exists())
+        self.assertEqual(dependency.read_text(), "unmanaged dependency")
+        pstack.uninstall(self.root)
+        self.assertEqual(dependency.read_text(), "unmanaged dependency")
+
+    def test_install_preserves_all_upstream_skills_and_support_files(self) -> None:
+        pstack.install(self.root, list(pstack.HOSTS))
+        original = ROOT / "upstream/pstack/skills"
+        installed = self.root / ".pstack-dual/bundle/skills"
+        original_files = {path.relative_to(original) for path in original.rglob("*") if path.is_file()}
+        installed_files = {path.relative_to(installed) for path in installed.rglob("*") if path.is_file()}
+        self.assertEqual(original_files - installed_files, set())
+        for relative in sorted(original_files):
+            if relative.suffix != ".md":
+                with self.subTest(file=str(relative)):
+                    self.assertEqual((installed / relative).read_bytes(), (original / relative).read_bytes())
+        for name in ("in-your-own-words", "sharpen"):
+            for host in (".agents", ".claude"):
+                link = self.root / host / "skills" / name
+                with self.subTest(host=host, skill=name):
+                    self.assertTrue(link.is_symlink())
+                    self.assertEqual(link.resolve(), installed / name)
+                    self.assertTrue((link / "SKILL.md").is_file())
+        self.assertFalse((self.root / ".codex/skills").exists())
+
+    def test_installed_helpers_run_and_reinstall_restores_executability(self) -> None:
+        unrelated = self.root / "own-script.sh"
+        unrelated.write_text("#!/bin/sh\nexit 0\n")
+        unrelated.chmod(0o640)
+        pstack.install(self.root, ["codex"])
+        relative = Path("poteto-mode/scripts/worktree-audit.sh")
+        helper = self.root / ".agents/skills" / relative
+        original = ROOT / "upstream/pstack/skills" / relative
+        self.assertEqual(helper.read_bytes(), original.read_bytes())
+        run = subprocess.run([str(helper), "--help"], cwd=self.root, capture_output=True, text=True, timeout=10)
+        self.assertEqual(run.returncode, 0, run.stderr)
+        self.assertIn("Usage: worktree-audit.sh", run.stdout)
+        self.assertEqual(run.stderr, "")
+        helper.chmod(0o644)
+        pstack.install(self.root, ["codex"])
+        self.assertEqual(helper.stat().st_mode & 0o111, original.stat().st_mode & 0o111)
+        before = (helper.stat().st_mtime_ns, helper.stat().st_mode)
+        pstack.install(self.root, ["codex"])
+        self.assertEqual((helper.stat().st_mtime_ns, helper.stat().st_mode), before)
+        self.assertEqual(unrelated.stat().st_mode & 0o777, 0o640)
 
     def test_conflicts_fail_before_any_write(self) -> None:
         path = self.root / ".claude/skills/how/SKILL.md"

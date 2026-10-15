@@ -37,6 +37,21 @@ resolver reports them as `ignored_model`. Preserve separate panel arms and label
 them independent same-model review. Different efforts do not establish model
 diversity. Do not claim cross-provider execution.
 
+## Task difficulty and effort
+
+Before each spawn, assess the task's difficulty, subtlety, and urgency. Select the
+role that describes the work, then resolve its configured effort. Use that exact
+effort only if the live host supports it for the current chat's model. A null
+effort inherits the parent. Assessment informs the brief, scope, and verification;
+it does not authorize raising or lowering configured effort, choosing another
+role to obtain a different effort, or changing the user's settings.
+
+Do not encode effort or fast mode in a model slug. Do not guess another effort
+after a rejected spawn. If the host cannot honor an effort, inherit and report
+the requested and inherited result. If speed controls are unavailable, report
+that limitation when relevant; do not substitute another model or CLI default.
+Verification workers follow the same configured-effort contract.
+
 ## Claude Code
 
 Use the live Agent/delegation tool (older releases call it Task). Omit its `model`
@@ -102,3 +117,13 @@ bundled control-cli/control-ui skills, and capture before/after evidence. A gree
 test that did not run assertions is not proof. Read-only investigation and review
 may run safe commands but must not edit project files. Preserve explicit scope;
 the skill's autonomy language never grants external actions on its own.
+
+Use the host's available visualization tools or Mermaid for diagrams. An imported
+`/visualize` example does not establish that command exists. Screenshots and
+videos must come from actual captured artifacts.
+
+The bundled `worktree-audit.sh` inspects Cursor transcript locations. Missing
+Cursor evidence does not establish that a Codex or Claude worktree is inactive.
+Before cleanup, inspect the actual git state and the relevant host's scoped
+session evidence. Report uncertain ownership and preserve a worktree when its
+activity cannot be established.

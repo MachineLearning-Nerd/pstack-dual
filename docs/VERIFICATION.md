@@ -37,8 +37,8 @@ delegation in each host. Installed payload validation and all 11 rendered native
 agent definitions were checked from a separate temporary installation. The pinned
 upstream update command was exercised without changing the selected source version.
 
-Those live receipts were recorded for the 0.15.15 source. The 0.15.17 update
-uses package and unit checks; no new live result or unchanged agent behavior is
+Those live receipts were recorded for the 0.15.15 source. The 0.15.17 and 0.15.25
+updates use package and unit checks; no new live result or unchanged agent behavior is
 implied. See [the source comparison](PARITY.md) for the remaining differences.
 
 When evaluating cases in separate runs, aggregate their saved receipts with:
@@ -54,3 +54,29 @@ and request the configured effort. It requires a matching completed child state
 for Codex or a successful foreground agent result for Claude. A launch event or
 the parent's prose alone does not establish completed independent work.
 The older model-selection receipts do not verify this current-chat policy.
+
+For the 0.15.25 import, the upstream helper suite passed 68 tests covering plan
+fences, orchestration state, review-thread pagination, and approval gates. Strict
+TypeScript checking also passed. These checks ran on a disposable copy of the
+generated scripts with the frozen Bun lockfile. They use local fixtures and fake
+forge readers, not live agent sessions or permission to merge anything.
+
+To repeat these checks without adding dependencies to the immutable source or
+generated package, copy the scripts to a temporary directory first:
+
+```sh
+pstack_test_dir=$(mktemp -d /tmp/pstack-script-check.XXXXXX)
+cp -a skills/poteto-mode/scripts/. "$pstack_test_dir/"
+cd "$pstack_test_dir"
+bun install --frozen-lockfile
+bun test orch watch-pr check-plan.test.ts
+./node_modules/.bin/tsc --project watch-pr/tsconfig.json --noEmit --strict
+```
+
+Use an installed Bun executable. No global runtime configuration is needed.
+
+Packaging checks execute an installed helper directly and verify executable-bit
+repair on reinstall. Existing helper `node_modules` directories are local runtime
+dependencies, not pstack source. Validation excludes them from skill-link checks,
+and reinstalling from a bundle does not adopt them into the managed payload.
+Uninstall preserves those unmanaged dependencies.

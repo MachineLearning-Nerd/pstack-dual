@@ -1,11 +1,11 @@
-# How pstack-dual differs from pstack 0.15.17
+# How pstack-dual differs from pstack 0.15.25
 
 The original source is pinned to official cursor/plugins commit
-`978ca6e9c0e012047cd5058b8e829240336e704e`, pstack 0.15.17.
+`850d7f2e9f5e55dff7eb00a0a479337fe79eb22f`, pstack 0.15.25.
 The complete pstack source is preserved in `upstream/pstack/`.
 `upstream.lock.json` records every imported file's hash.
 
-All 52 original top-level skills and all their supporting files are present in
+All 54 original top-level skills and all their supporting files are present in
 the generated package. The six additions are control-cli, control-ui, deslop,
 create-skill, pstack-harness, and pstack-review. The first three come from the
 same official Cursor commit. The other three provide portable authoring,
@@ -16,14 +16,31 @@ instructions and packaging. It does not prove every workflow runs on both hosts.
 
 ## The release changes are included
 
-[PR #538](https://github.com/cursor/plugins/pull/538) shortens 35 Markdown files
-and corrects architect's requested how output to an architectural explanation.
-Its reported reduction is 9.7% in bytes and 9.0% in words across those files.
-Those counts do not establish equivalent behavior or task speed on our hosts.
+This update imports the official changes since our 0.15.17 pin. All 169 pstack
+source files are preserved, including the new root Agent Plugins manifest.
+The generated bundle contains 60 skills. The required cursor-team-kit skills
+have no changes in this range.
 
-[PR #539](https://github.com/cursor/plugins/pull/539) adds ketchup. Its skill,
-read-only rules, bro reference, and current-chat scope are included. Our help
-override now routes to ketchup and distinguishes it from recall.
+- [In your own words](https://github.com/cursor/plugins/pull/602) restates the
+  user's goal and problem before work. [Sharpen](https://github.com/cursor/plugins/pull/615)
+  improves the approach and requires an outside correctness check.
+- [Ketchup](https://github.com/cursor/plugins/pull/628) explains changes in fewer
+  than 150 words, with existing screenshots, videos, or small diagrams when useful.
+  It stays read-only and cannot invent visual evidence or start an app for a recap.
+- [Review-thread pagination](https://github.com/cursor/plugins/pull/484) reads all
+  thread pages and correctly identifies owner approval gates.
+- [Plan checks](https://github.com/cursor/plugins/pull/536) handle Markdown fences
+  correctly. [Worktree audits](https://github.com/cursor/plugins/pull/574) support
+  explicit merge bases and the repository's default branch.
+- [Workflow updates](https://github.com/cursor/plugins/pull/613) replace Graphite
+  orchestration with gh or optional Origin, refine verification reuse and topology
+  ownership, and match delegation effort to the job. Model selection is adapted
+  to the user's current-chat-only requirement below.
+
+Verification-skill authoring now checks usable startup from empty data, migrations,
+seed data, and missing journey preconditions. Evidence from a substitute environment
+must identify setup steps that remain unverified on the real target. Deep debugging
+also proposes a cheap ongoing signal when it would catch the cause earlier.
 
 The how and interrogate entry points use explicit portable overrides instead
 of copying the original entry points. Their original reference files receive
@@ -75,10 +92,19 @@ Read-only review has an explicit route. Comment Sicko reports findings through
 a read-only native wrapper. The original persona can describe edits, but the
 wrapper requires the lead to make accepted edits within the task's scope.
 
-The portable poteto-agent wrapper reads poteto-mode and its playbook instead of
-copying Cursor's background-agent metadata. Claude effort wrappers carry
+The main chat runs the playbook and owns its worklist. The portable poteto-agent
+wrapper reads the absolute poteto-mode path and executes only its bounded brief.
+It must not take over the whole playbook. Claude effort wrappers carry
 written effort settings where the host supports them. None of those files
-alone proves that a live host loaded the agent.
+alone proves that a live host loaded the agent. Task difficulty is assessed
+without changing model families, selecting fast model variants, or overriding
+configured effort. Unset effort inherits the chat. Unsupported effort or speed
+controls are reported rather than invented.
+
+Ketchup's optional `/visualize` reference is not a bundled tool. Use an available
+visualization capability or Mermaid. The bundled worktree audit still reads
+Cursor transcripts. Missing Cursor activity cannot establish that a Codex or
+Claude worktree is inactive; cleanup needs host-session evidence and git state.
 
 ## Source material that remains inactive
 
@@ -97,7 +123,7 @@ Overnight orchestration, transcript mining, bot UI, and other advanced workflows
 remain present as an experimental library. The supported verification target
 is investigation, bug fix, feature, and read-only review. Existing live receipts
 were recorded before this source update. No new live evaluation is claimed for
-0.15.17 or the current-chat-only model policy. Package checks and synthetic
+0.15.17, 0.15.25, or the current-chat-only model policy. Package checks and synthetic
 native-event tests do not establish live agent behavior under these instructions.
 
 ## Checks to repeat

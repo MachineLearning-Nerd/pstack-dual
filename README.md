@@ -101,10 +101,13 @@ wrappers contain machine-local absolute paths. Regenerate wrappers on each machi
 
 The immutable upstream snapshot and commit are recorded in `upstream.lock.json`.
 Edit `overrides/` or `tools/build.py`, then regenerate the adapted bundle.
-The current source is pstack 0.15.17. All 52 original skills are included, with
+The current source is pstack 0.15.25. All 54 original skills are included, with
 portable overrides for the hosts. See [the complete comparison](docs/PARITY.md)
 for workflow differences and decisions. Use `$ketchup` in Codex or `/ketchup`
-in Claude to catch up on the current chat and pending decisions.
+in Claude to catch up on the current chat and pending decisions. Catch-ups now
+use concise text and existing screenshots or diagrams when they explain a change.
+Use `$in-your-own-words` to check the agent's understanding of your goal, or
+`$sharpen` to improve its approach before it starts.
 See [porting decisions](docs/PORTING.md), [verification](docs/VERIFICATION.md),
 and [upstream updates](docs/UPSTREAM.md). Live evaluation is explicit:
 

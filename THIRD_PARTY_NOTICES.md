@@ -1,7 +1,7 @@
 # Attribution
 
 This derivative starts from cursor/plugins commit
-`978ca6e9c0e012047cd5058b8e829240336e704e`, pstack version 0.15.17.
+`850d7f2e9f5e55dff7eb00a0a479337fe79eb22f`, pstack version 0.15.25.
 
 * pstack: Lauren Tan (poteto), MIT, upstream/pstack/LICENSE.
 * deslop, control-cli, control-ui: Cursor, MIT, upstream/cursor-team-kit/LICENSE.

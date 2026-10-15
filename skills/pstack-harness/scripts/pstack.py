@@ -128,7 +128,7 @@ def native_agents(root: Path, host: str) -> dict[str, bytes]:
     review = bundle / "pstack-review/SKILL.md"
     briefs = {
         "poteto-agent": ("Implement bounded pstack tasks with behavioral verification.",
-                         f"Read {mode} and {harness} before working. Follow the matched playbook. Respect the user's explicit scope and actual permissions."),
+                         f"Read {mode} in full before working, including its inline Principles index, and read {harness}. The parent chat owns the playbook and worklist. Execute only the parent's bounded brief, and read each leaf principle skill you apply. Respect the user's explicit scope and actual permissions."),
         "pstack-reviewer": ("Read-only independent review of scoped artifacts.",
                             f"Read {review} and {harness}. Remain read-only. Find reachable defects and cite evidence; do not edit, commit, or publish."),
         "comment-sicko": ("Review comments in the scoped diff without editing code.",
@@ -177,7 +177,8 @@ def installation_plan(root: Path, hosts: list[str]) -> dict[str, bytes | str]:
     source = skills_root()
     plan: dict[str, bytes | str] = {}
     for path in sorted(source.rglob("*")):
-        if path.is_file() and "__pycache__" not in path.parts and path.suffix != ".pyc":
+        if (path.is_file() and not {"__pycache__", "node_modules"}.intersection(path.relative_to(source).parts)
+                and path.suffix != ".pyc"):
             plan[f".pstack-dual/bundle/skills/{path.relative_to(source)}"] = path.read_bytes()
     for relative in ("docs/guide", "automations", "assets"):
         directory = source.parent / relative
@@ -234,6 +235,8 @@ def install(root: Path, hosts: list[str], dry_run: bool = False) -> dict[str, An
     with temporary_ledger.open("x") as stream:
         stream.write(json.dumps(journal, indent=2) + "\n")
     temporary_ledger.replace(ledger_path)
+    source = skills_root()
+    bundle_prefix = ".pstack-dual/bundle/skills/"
     for rel, payload in plan.items():
         path = safe_path(root, rel)
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -247,6 +250,11 @@ def install(root: Path, hosts: list[str], dry_run: bool = False) -> dict[str, An
             with temporary.open("xb") as stream:
                 stream.write(payload)
             temporary.replace(path)
+        if isinstance(payload, bytes) and rel.startswith(bundle_prefix):
+            executable = (source / rel.removeprefix(bundle_prefix)).stat().st_mode & 0o111
+            mode = path.stat().st_mode & 0o777
+            if executable and mode & executable != executable:
+                path.chmod(mode | executable)
     for rel in set(ledger["files"]) - set(plan):
         path = safe_path(root, rel)
         if state(path) is not None:
@@ -322,6 +330,8 @@ def validate_bundle() -> dict[str, Any]:
             if not (index.parent / target).is_file():
                 raise ValueError(f"broken indexed reference {target}: {index}")
     for path in source.rglob("*.md"):
+        if "node_modules" in path.relative_to(source).parts:
+            continue
         text = path.read_text()
         if re.search(r"~?/\.cursor/|grok-\d|claude-opus-\d", text):
             raise ValueError(f"unadapted Cursor path/model: {path}")

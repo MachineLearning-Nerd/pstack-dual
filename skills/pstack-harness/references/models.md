@@ -39,6 +39,8 @@ Other roles: default, how explorer, why investigators, reflect tooling.
 Panels: arena runners, arena cross-judge pool, architect runners, interrogate reviewers.
 
 The resolver never escalates effort, selects a different model, or changes host
-configuration. Claude effort agents carry written efforts; if they are not live,
+configuration. Assess task difficulty under [the effort contract](../SKILL.md#task-difficulty-and-effort);
+configured efforts are exact requests, and null inherits without automatic tier changes.
+Claude effort agents carry written efforts; if they are not live,
 report the inherited effort. A role resolution describes the request, not proof
 that the resulting child ran with that identity.
