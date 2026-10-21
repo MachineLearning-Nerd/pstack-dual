@@ -86,6 +86,7 @@ conflict with existing skills, so project scope is recommended first.
 ```sh
 python3 tools/build.py --check
 python3 tools/pstack.py validate
+python3 tools/check_upstream.py
 python3 -m unittest discover -s tests
 python3 tools/pstack.py uninstall --target /absolute/path/to/project
 ```
@@ -101,13 +102,18 @@ wrappers contain machine-local absolute paths. Regenerate wrappers on each machi
 
 The immutable upstream snapshot and commit are recorded in `upstream.lock.json`.
 Edit `overrides/` or `tools/build.py`, then regenerate the adapted bundle.
-The current source is pstack 0.15.25. All 54 original skills are included, with
+The current source is pstack 0.15.29. All 56 original skills are included, with
 portable overrides for the hosts. See [the complete comparison](docs/PARITY.md)
 for workflow differences and decisions. Use `$ketchup` in Codex or `/ketchup`
 in Claude to catch up on the current chat and pending decisions. Catch-ups now
 use concise text and existing screenshots or diagrams when they explain a change.
 Use `$in-your-own-words` to check the agent's understanding of your goal, or
-`$sharpen` to improve its approach before it starts.
+`$sharpen` to return an improved prompt without executing its task. Use
+`$create-formal-verification-skill` for a reusable check of a race or invariant,
+and `$maintain-formal-verification-skill` when its covered code changes.
+See [each reviewed release](docs/RELEASES.md) for the 0.15.26 through 0.15.29
+changes, adopted behavior and intentional host differences. Updates require
+fresh source-hash reviews for exceptional files in `upstream-reviews.json`.
 See [porting decisions](docs/PORTING.md), [verification](docs/VERIFICATION.md),
 and [upstream updates](docs/UPSTREAM.md). Live evaluation is explicit:
 

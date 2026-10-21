@@ -10,6 +10,9 @@ Read pstack-harness for native mechanics and its
    A mechanical one-file edit may skip the comparison with a stated reason.
 3. Record a throughput checkpoint: blocking steps, independent work, shared state,
    and the smallest safe decomposition. Each irrelevant dimension gets a reason.
+   Refresh the checkpoint at phase boundaries. Keep code-coupled work under one
+   owner, who delegates internally after blocking steps. Parent-level parallel
+   work produces independent artifacts. Use fresh owners instead of interrupt chains.
 4. Give a bounded implementation worker explicit file scope and acceptance criteria.
    Resolve feature or hardest tasks as appropriate. Use independent worktrees for
    concurrent writers; serialize if isolation is unavailable. When a substantial
@@ -17,6 +20,8 @@ Read pstack-harness for native mechanics and its
    and independent cross-judging. Every candidate and judge inherits the current
    chat's model. Review actual candidate diffs and record the winning tradeoff.
    Report unavailable comparison or independent judging rather than claiming it ran.
+   Re-ground changes to upstream-derived files against the original source.
+   Port shared-primitive improvements to every consumer and verify each consumer.
 5. Verify the feature through the product entry point and meaningful tests, including
    boundary inputs. Obtain an independent read-only review when available. Address
    supported findings, rerun affected checks, and report gaps honestly.

@@ -10,7 +10,10 @@ import re
 import shutil
 import tempfile
 
+import check_upstream
+
 ROOT = Path(__file__).resolve().parent.parent
+OUTPUTS = ("skills", "docs/guide", "docs/harness", "assets", "automations", "adapters", "THIRD_PARTY_NOTICES.md")
 ADAPTER = """\n## Host compatibility\n\nRead [pstack-harness](../pstack-harness/SKILL.md) before using this workflow.\nIts native-tool, role-config, scope, and permission contract takes precedence over\nbackend-specific examples below. Every delegate inherits the current chat's model;\nnever pass a model override, including when an imported example requests one.\nRead only the references needed for this task.\n\n"""
 
 
@@ -54,8 +57,18 @@ def verify_snapshot() -> None:
         raise ValueError("upstream snapshot differs from upstream.lock.json")
 
 
+def replace_once(text: str, pattern: str, replacement: str, label: str) -> str:
+    result, count = re.subn(pattern, replacement, text, flags=re.M | re.S)
+    if count != 1:
+        raise ValueError(f"upstream adaptation requires exactly one {label}; found {count}")
+    return result
+
+
 def generate(destination: Path) -> None:
     verify_snapshot()
+    coverage = check_upstream.audit(ROOT, check_generated=False)
+    if not coverage["valid"]:
+        raise ValueError("upstream review gate failed:\n" + "\n".join(coverage["errors"]))
     skills = destination / "skills"
     shutil.copytree(ROOT / "upstream/pstack/skills", skills)
     for name in ("deslop", "control-cli", "control-ui"):
@@ -75,16 +88,20 @@ def generate(destination: Path) -> None:
         if path.parent.name != "pstack-harness":
             body = "\n" + ADAPTER + body.lstrip("\n")
         if path.parent.name == "poteto-mode":
-            body = re.sub(
+            body = replace_once(
+                body,
                 r"^\*\*Defaults for every `Task` call\.\*\*.*?(?=\n\n|\Z)",
                 "**Defaults for delegation.** Use native agents with file pointers, bounded scope, and the actual host's read-only or implementation persona. Every delegate inherits the current chat's model; omit the model argument. Resolve each role through pstack-harness for effort and panel size. Legacy model selections are ignored and reported. Use background execution only when supported, and wait for actual completed results. The user controls model selection in the chat.",
-                body, count=1, flags=re.M | re.S,
+                "delegation defaults paragraph",
             )
-            body = re.sub(
+            body = replace_once(
+                body,
                 r"^\*\*Match the model to the job\.\*\*.*?(?=\n\n|\Z)",
                 "**Match effort to the job.** Assess each delegate's task difficulty and urgency before spawning. Follow [the effort contract](../pstack-harness/SKILL.md#task-difficulty-and-effort). Use the resolved effort exactly when the host supports it; null inherits the parent. Keep the current chat's model, preserve user settings, and report unavailable effort or speed controls.",
-                body, count=1, flags=re.M | re.S,
+                "effort selection paragraph",
             )
+            if body.count("## Non-negotiables") != 1:
+                raise ValueError("upstream adaptation requires exactly one Non-negotiables heading")
             body = body.replace("## Non-negotiables", "## Review routing\n\nA request to review a diff, branch, or PR uses playbooks/code-review.md and\npstack-review. It remains read-only and does not enter the Babysit lifecycle.\nCore feature and bug-fix playbooks govern their design gates and local completion.\nSubstantial features compare designs with architect and use arena when multiple\nimplementation shapes are valid. Bug fixes crossing a function boundary use\narchitect. The documented narrow-question and mechanical-edit shortcuts take\nprecedence over general triggers below. Every delegate uses the current chat's\nmodel. PR creation and commits require the user's requested scope.\n\n## Non-negotiables", 1)
         path.write_text("---" + header + "---\n" + body)
         license_source = ROOT / ("upstream/cursor-team-kit/LICENSE" if path.parent.name in {"deslop", "control-cli", "control-ui"} else "LICENSE")
@@ -101,6 +118,13 @@ def generate(destination: Path) -> None:
     shutil.copytree(ROOT / "upstream/pstack/docs/guide", guide)
     for path in guide.rglob("*.md"):
         path.write_text("<!-- Historical upstream guide adapted for paths; see ../../PORTING.md for support status. -->\n" + adapt(path.read_text()))
+    harness = destination / "docs/harness"
+    if (ROOT / "upstream/pstack/docs/harness").is_dir():
+        shutil.copytree(ROOT / "upstream/pstack/docs/harness", harness)
+        for path in harness.rglob("*.md"):
+            path.write_text("> Historical upstream adapter. Its model, setup and tool examples are not active pstack-dual instructions. Follow the [portable host contract](../../skills/pstack-harness/SKILL.md), which takes precedence.\n\n" + path.read_text())
+    else:
+        harness.mkdir(parents=True)
     shutil.copytree(ROOT / "upstream/pstack/assets", destination / "assets")
     automations = destination / "automations"
     shutil.copytree(ROOT / "upstream/pstack/automations", automations)
@@ -132,7 +156,7 @@ def main() -> None:
     with tempfile.TemporaryDirectory(prefix="pstack-build-") as temporary:
         out = Path(temporary)
         generate(out)
-        for relative in ("skills", "docs/guide", "assets", "automations", "adapters", "THIRD_PARTY_NOTICES.md"):
+        for relative in OUTPUTS:
             current, expected = ROOT / relative, out / relative
             if expected.is_file():
                 if args.check:

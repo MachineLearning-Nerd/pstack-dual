@@ -13,15 +13,24 @@ or after a handoff; Cursor's persistent custom-mode controls do not apply here.
 
 For a recap of the current chat, use [ketchup](../ketchup/SKILL.md). It explains
 what happened since the user's last message and decisions still waiting on them.
-It gives a short plain-language summary and small visuals when they explain a change.
+It keeps the progress summary short and lists every waiting item with its effect,
+evidence, risk and recommendation. It never omits items to meet a word limit.
+Small visuals are included when they explain a change.
 For context across previous chats, use [recall](../recall/SKILL.md). These are
 different scopes. Ketchup stays read-only and follows [bro](../bro/SKILL.md) for
 plain language. Use `$ketchup` in Codex or `/ketchup` in Claude.
 
 Use [in-your-own-words](../in-your-own-words/SKILL.md) to restate the user's goals
-before acting. Use [sharpen](../sharpen/SKILL.md) to improve the task's framing,
-choose expert methods and an outside check, then do the work. Sharpen does not
-return a rewritten prompt or decide preferences that belong to the user.
+before acting. Use [sharpen](../sharpen/SKILL.md) to rewrite a prompt with expert
+methods, primary material and an outside correctness check. It returns only the
+rewritten prompt and does not execute the task or decide the user's preferences.
+
+Use [create-formal-verification-skill](../create-formal-verification-skill/SKILL.md)
+for a race, invariant or other property tests rarely reach. It creates a local
+check with explicit bounds, code links and a demonstrated failing variant. Use
+[maintain-formal-verification-skill](../maintain-formal-verification-skill/SKILL.md)
+when covered code changes after its recorded sync commit. A passing stale model
+does not prove current code correct. Formal verification tools are not bundled.
 
 Core supported workflows are investigation (how), bug fix, feature, and read-only
 code review (pstack-review/interrogate). Principles and local verification skills

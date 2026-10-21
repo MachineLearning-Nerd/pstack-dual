@@ -180,12 +180,12 @@ def installation_plan(root: Path, hosts: list[str]) -> dict[str, bytes | str]:
         if (path.is_file() and not {"__pycache__", "node_modules"}.intersection(path.relative_to(source).parts)
                 and path.suffix != ".pyc"):
             plan[f".pstack-dual/bundle/skills/{path.relative_to(source)}"] = path.read_bytes()
-    for relative in ("docs/guide", "automations", "assets"):
+    for relative in ("docs/guide", "docs/harness", "automations", "assets"):
         directory = source.parent / relative
         for path in sorted(directory.rglob("*")):
             if path.is_file():
                 plan[f".pstack-dual/bundle/{relative}/{path.relative_to(directory)}"] = path.read_bytes()
-    for relative in ("README.md", "LICENSE", "THIRD_PARTY_NOTICES.md", "docs/PORTING.md", "docs/VERIFICATION.md", "docs/UPSTREAM.md", "docs/PARITY.md"):
+    for relative in ("README.md", "LICENSE", "THIRD_PARTY_NOTICES.md", "docs/PORTING.md", "docs/VERIFICATION.md", "docs/UPSTREAM.md", "docs/PARITY.md", "docs/RELEASES.md"):
         path = source.parent / relative
         if path.is_file():
             plan[f".pstack-dual/bundle/{relative}"] = path.read_bytes()

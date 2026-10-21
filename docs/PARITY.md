@@ -1,11 +1,11 @@
-# How pstack-dual differs from pstack 0.15.25
+# How pstack-dual differs from pstack 0.15.29
 
 The original source is pinned to official cursor/plugins commit
-`850d7f2e9f5e55dff7eb00a0a479337fe79eb22f`, pstack 0.15.25.
+`88d47514b82e7c44f00f2b2a72ff6dd12158038c`, pstack 0.15.29.
 The complete pstack source is preserved in `upstream/pstack/`.
 `upstream.lock.json` records every imported file's hash.
 
-All 54 original top-level skills and all their supporting files are present in
+All 56 original top-level skills and all their supporting files are present in
 the generated package. The six additions are control-cli, control-ui, deslop,
 create-skill, pstack-harness, and pstack-review. The first three come from the
 same official Cursor commit. The other three provide portable authoring,
@@ -16,14 +16,20 @@ instructions and packaging. It does not prove every workflow runs on both hosts.
 
 ## The release changes are included
 
-This update imports the official changes since our 0.15.17 pin. All 169 pstack
-source files are preserved, including the new root Agent Plugins manifest.
-The generated bundle contains 60 skills. The required cursor-team-kit skills
-have no changes in this range.
+The current snapshot preserves all 172 pstack source files. The generated bundle
+contains 62 skills. The required cursor-team-kit skills are unchanged from 0.15.25.
+The [release-by-release review](RELEASES.md) accounts for 0.15.26 through 0.15.29,
+including both formal-verification skills, complete ketchup decision lists,
+sharpen's prompt-only contract, corrected principles and TypeScript guidance.
+The new upstream Claude adapter is packaged as historical reference; the portable
+host contract remains authoritative.
+
+The previous 0.15.17 to 0.15.25 update imported these improvements:
 
 - [In your own words](https://github.com/cursor/plugins/pull/602) restates the
   user's goal and problem before work. [Sharpen](https://github.com/cursor/plugins/pull/615)
-  improves the approach and requires an outside correctness check.
+  introduced expert framing and an outside correctness check. Its current
+  0.15.29 behavior returns only a rewritten prompt without executing the task.
 - [Ketchup](https://github.com/cursor/plugins/pull/628) explains changes in fewer
   than 150 words, with existing screenshots, videos, or small diagrams when useful.
   It stays read-only and cannot invent visual evidence or start an app for a recap.
@@ -123,7 +129,7 @@ Overnight orchestration, transcript mining, bot UI, and other advanced workflows
 remain present as an experimental library. The supported verification target
 is investigation, bug fix, feature, and read-only review. Existing live receipts
 were recorded before this source update. No new live evaluation is claimed for
-0.15.17, 0.15.25, or the current-chat-only model policy. Package checks and synthetic
+0.15.17, 0.15.25, 0.15.29, or the current-chat-only model policy. Package checks and synthetic
 native-event tests do not establish live agent behavior under these instructions.
 
 ## Checks to repeat
@@ -133,6 +139,7 @@ Run the source and package checks from this checkout.
 ```sh
 python3 tools/build.py --check
 python3 tools/pstack.py validate
+python3 tools/check_upstream.py
 python3 -m unittest discover -s tests
 ```
 

@@ -33,6 +33,13 @@ code, judgment, and panel roles with `pstack.py resolve`; every arm must have
 effort inherits and is reported. Configuration updates apply to the next resolved
 delegation, not automatically to agents already running.
 
-If the project has no behavioral verification path, use create-verification-skill
-when appropriate to the task. Report the actual checks, unresolved capabilities,
+If the project has no behavioral verification path, offer once to create a
+[verification skill](../create-verification-skill/SKILL.md). If it has no formal
+verification skill, separately offer once to create a
+[formal verification skill](../create-formal-verification-skill/SKILL.md).
+Generate either only when accepted; declining does not block setup. For an
+existing formal skill whose covered code changed after its sync commit, point
+to [formal verification maintenance](../maintain-formal-verification-skill/SKILL.md).
+These offers do not authorize installing verification tools or changing product code.
+Report the actual checks, unresolved capabilities,
 and how to invoke `$poteto-mode` in Codex or `/poteto-mode` in Claude.

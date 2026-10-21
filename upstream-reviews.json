@@ -1,0 +1,263 @@
+{
+  "version": 1,
+  "reviews": {
+    "cursor-team-kit/LICENSE": {
+      "sha256": "702f5f331b56aff0e33d8c7826df5202559f894145eb70355c6477b55b5bb8a0",
+      "disposition": "source-only",
+      "reason": "Preserve original MIT attribution in the snapshot and generated skill licenses; the portable package retains its own root license and notices.",
+      "evidence": [
+        "LICENSE",
+        "THIRD_PARTY_NOTICES.md"
+      ]
+    },
+    "pstack/.cursor-plugin/plugin.json": {
+      "sha256": "079de0bc2c331df98ecf388b84c938a3a61910f49a1cc37e680d9e2ca9bcd324",
+      "disposition": "source-only",
+      "reason": "Keep original plugin registration in the locked snapshot. Native scoped installation replaces Cursor and marketplace activation; manifest versions must match the pin.",
+      "evidence": [
+        "tools/pstack.py",
+        "docs/RELEASES.md"
+      ]
+    },
+    "pstack/.gitignore": {
+      "sha256": "8ffe9de56bd30c1a95cd945262d6e3ac355ada4111551dde41f67851b9f1fc55",
+      "disposition": "source-only",
+      "reason": "Keep original repository exclusions in source; this derivative maintains its own scoped packaging and audit exclusions.",
+      "evidence": [
+        ".gitignore",
+        "docs/PARITY.md"
+      ]
+    },
+    "pstack/LICENSE": {
+      "sha256": "bc957ca6bee02792566a1a028d105e02e247c6e77cf057061674273da77b200e",
+      "disposition": "source-only",
+      "reason": "Preserve original MIT attribution in the snapshot and generated skill licenses; the portable package retains its own root license and notices.",
+      "evidence": [
+        "LICENSE",
+        "THIRD_PARTY_NOTICES.md"
+      ]
+    },
+    "pstack/README.md": {
+      "sha256": "b928886260bd551b0c8f3e58617a5dc3ad8dfc1293d096b1ef81b84007532486",
+      "disposition": "source-only",
+      "reason": "Keep the original README in source; the portable README describes native installation,56 upstream skills and0.15.29 behavior without claiming live host equivalence.",
+      "evidence": [
+        "README.md",
+        "docs/RELEASES.md"
+      ]
+    },
+    "pstack/agents/poteto-agent.md": {
+      "sha256": "979f18abd000d185a0b4c41a2a4111c0910596a7f5c81cbb571885bc721b2bf7",
+      "disposition": "synthesized",
+      "reason": "Native absolute-path wrappers preserve full Principles reading and parent-owned playbooks; omit model overrides and Cursor plugin discovery.",
+      "evidence": [
+        "tools/pstack.py",
+        "docs/PARITY.md",
+        "docs/RELEASES.md"
+      ]
+    },
+    "pstack/automations/benny/FOR_AGENTS.md": {
+      "sha256": "a125e317dec1b8731fdc71f404c669f1127a73af932f7a7b8b8744a5542328a7",
+      "disposition": "dormant-reference",
+      "reason": "Preserve this original automation resource as dormant reference. No routine, credentials, registration or external action is enabled.",
+      "evidence": [
+        "docs/PARITY.md",
+        "tools/build.py"
+      ]
+    },
+    "pstack/automations/benny/README.md": {
+      "sha256": "ca3c42cbb7f0bf7068f7407eb355815e6c234d5c2786942f3cbe751a3690024b",
+      "disposition": "dormant-reference",
+      "reason": "Preserve this original automation resource as dormant reference. No routine, credentials, registration or external action is enabled.",
+      "evidence": [
+        "docs/PARITY.md",
+        "tools/build.py"
+      ]
+    },
+    "pstack/automations/benny/skills/reproduce-and-fix-issues/SKILL.md": {
+      "sha256": "1363cc07343fe86aab42853b1bd4563288cbcbdf12f1c265b3b3b1afa25c09cb",
+      "disposition": "dormant-reference",
+      "reason": "Preserve this original automation resource as dormant reference. No routine, credentials, registration or external action is enabled.",
+      "evidence": [
+        "docs/PARITY.md",
+        "tools/build.py"
+      ]
+    },
+    "pstack/automations/benny/skills/reproduce-and-fix-issues/references/control-adapter.md": {
+      "sha256": "58b0615d2fca895f9a20df83266e280042b0d585b5f2fd324e2094a682fd846b",
+      "disposition": "dormant-reference",
+      "reason": "Preserve this original automation resource as dormant reference. No routine, credentials, registration or external action is enabled.",
+      "evidence": [
+        "docs/PARITY.md",
+        "tools/build.py"
+      ]
+    },
+    "pstack/automations/benny/skills/reproduce-and-fix-issues/references/feature-map.example.md": {
+      "sha256": "1e5c7c8522daec3e43fcc2e73ceb97289ded65b552949ce65a11cc8eb3d2b6ee",
+      "disposition": "dormant-reference",
+      "reason": "Preserve this original automation resource as dormant reference. No routine, credentials, registration or external action is enabled.",
+      "evidence": [
+        "docs/PARITY.md",
+        "tools/build.py"
+      ]
+    },
+    "pstack/automations/benny/skills/reproduce-and-fix-issues/references/verify-existing-fix.md": {
+      "sha256": "c90eae00abcdec71a58fa8d60f2c495b082a526ad50b8e8e494837609129bf29",
+      "disposition": "dormant-reference",
+      "reason": "Preserve this original automation resource as dormant reference. No routine, credentials, registration or external action is enabled.",
+      "evidence": [
+        "docs/PARITY.md",
+        "tools/build.py"
+      ]
+    },
+    "pstack/automations/benny/skills/setup-benny/SKILL.md": {
+      "sha256": "5a3cbe63360c9f6373b6cb6c79a1eaf7e0eba181bfaa1577e2e6431af3407282",
+      "disposition": "dormant-reference",
+      "reason": "Preserve this original automation resource as dormant reference. No routine, credentials, registration or external action is enabled.",
+      "evidence": [
+        "docs/PARITY.md",
+        "tools/build.py"
+      ]
+    },
+    "pstack/automations/benny/skills/triage-issue-reports/SKILL.md": {
+      "sha256": "216a758b8711e64d19a55e6032c496527daac6364d010611040f3c04ef1a448f",
+      "disposition": "dormant-reference",
+      "reason": "Preserve this original automation resource as dormant reference. No routine, credentials, registration or external action is enabled.",
+      "evidence": [
+        "docs/PARITY.md",
+        "tools/build.py"
+      ]
+    },
+    "pstack/automations/benny/skills/triage-issue-reports/references/routing.example.md": {
+      "sha256": "e5e53013692568cf69da8e8b302fff929fe2fbc9aec1a4651fd7997e2c7a4025",
+      "disposition": "dormant-reference",
+      "reason": "Preserve this original automation resource as dormant reference. No routine, credentials, registration or external action is enabled.",
+      "evidence": [
+        "docs/PARITY.md",
+        "tools/build.py"
+      ]
+    },
+    "pstack/automations/benny/templates/configuration.example.yaml": {
+      "sha256": "13e24b4ce9b9a0913916e85fe3b080b88d45f8e55dccfe8ae38e0751a997b6f5",
+      "disposition": "dormant-reference",
+      "reason": "Preserve this original automation resource as dormant reference. No routine, credentials, registration or external action is enabled.",
+      "evidence": [
+        "docs/PARITY.md",
+        "tools/build.py"
+      ]
+    },
+    "pstack/automations/benny/templates/reproduce-automation-prompt.md": {
+      "sha256": "71ec574f1844e379394ae4ef14c48d7df10afbaa319d395c788d7f856f0e6899",
+      "disposition": "dormant-reference",
+      "reason": "Preserve this original automation resource as dormant reference. No routine, credentials, registration or external action is enabled.",
+      "evidence": [
+        "docs/PARITY.md",
+        "tools/build.py"
+      ]
+    },
+    "pstack/automations/benny/templates/triage-automation-prompt.md": {
+      "sha256": "e0bba594547834f013ec805915610eb597e7929efe3ffbe85ae00339ee16d474",
+      "disposition": "dormant-reference",
+      "reason": "Preserve this original automation resource as dormant reference. No routine, credentials, registration or external action is enabled.",
+      "evidence": [
+        "docs/PARITY.md",
+        "tools/build.py"
+      ]
+    },
+    "pstack/docs/harness/claude-code.md": {
+      "sha256": "c79e2283d3a83c6be3dd1cac33f9c074067c95e610ae6e0a16d9fdee84058927",
+      "disposition": "dormant-reference",
+      "reason": "Keep the official Claude adapter as historical reference. Reconcile its future host fixes explicitly; our current-model, exact-effort, scoped-session and standalone installation contract remains authoritative.",
+      "evidence": [
+        "overrides/pstack-harness/SKILL.md",
+        "docs/RELEASES.md"
+      ]
+    },
+    "pstack/plugin.json": {
+      "sha256": "8a5811042556a0a981e9fdd08a2c726be76458833d64b484acaa611291308c2a",
+      "disposition": "source-only",
+      "reason": "Keep original plugin registration in the locked snapshot. Native scoped installation replaces Cursor and marketplace activation; manifest versions must match the pin.",
+      "evidence": [
+        "tools/pstack.py",
+        "docs/RELEASES.md"
+      ]
+    },
+    "pstack/skills/how/SKILL.md": {
+      "sha256": "08a00079bb15b4258874ac3ff62d4ca7e94350ffedb521d0fd296dc9dd21904e",
+      "disposition": "overridden",
+      "reason": "Preserve source-grounded research and separate synthesis with native read-only delegation and the documented narrow-question shortcut.",
+      "evidence": [
+        "overrides/how/SKILL.md",
+        "docs/PARITY.md",
+        "docs/RELEASES.md"
+      ]
+    },
+    "pstack/skills/interrogate/SKILL.md": {
+      "sha256": "a16dfe179005abc22a4651b82f25b0c8ab953284276efe4e6dc341958fb63647",
+      "disposition": "overridden",
+      "reason": "Keep intent, rubric, independent reviewers and lead judgment while inheriting the current chat model and remaining read-only.",
+      "evidence": [
+        "overrides/interrogate/SKILL.md",
+        "docs/PARITY.md",
+        "docs/RELEASES.md"
+      ]
+    },
+    "pstack/skills/poteto-help/SKILL.md": {
+      "sha256": "67c77ee5e91c19809b01d08cc73cc2870a52fb95fc64dc33328bf8ff9e49891c",
+      "disposition": "overridden",
+      "reason": "Port both formal-verification routes, complete ketchup decisions and prompt-only sharpen while describing the standalone shared installation.",
+      "evidence": [
+        "overrides/poteto-help/SKILL.md",
+        "docs/PARITY.md",
+        "docs/RELEASES.md"
+      ]
+    },
+    "pstack/skills/poteto-mode/SKILL.md": {
+      "sha256": "2755f102e7a6d0496b429d1031a22fb353e1f3d523543367caeaae5c4ed6f544",
+      "disposition": "synthesized",
+      "reason": "Keep the upstream playbook and principles while replacing exactly matched delegation, effort and review-routing instructions under the portable harness.",
+      "evidence": [
+        "tools/build.py",
+        "docs/PARITY.md",
+        "docs/RELEASES.md"
+      ]
+    },
+    "pstack/skills/poteto-mode/playbooks/bug-fix.md": {
+      "sha256": "66e26542dad131cfd7df80ac0cdf81ed4d85e7b5e3f0eb65b933888760c4831f",
+      "disposition": "overridden",
+      "reason": "Keep hypothesis elimination, reproduction and cross-function design review; use native host verification and authorized local completion.",
+      "evidence": [
+        "overrides/poteto-mode/playbooks/bug-fix.md",
+        "docs/PARITY.md",
+        "docs/RELEASES.md"
+      ]
+    },
+    "pstack/skills/poteto-mode/playbooks/feature.md": {
+      "sha256": "af8ce700b99953741cb547e34308fde0cf6b98ce67e1652c800d0deedf53aba1",
+      "disposition": "overridden",
+      "reason": "Restore all-consumer verification and coupled-owner checkpoint rules; keep substantial design gates and local completion within user scope.",
+      "evidence": [
+        "overrides/poteto-mode/playbooks/feature.md",
+        "docs/PARITY.md",
+        "docs/RELEASES.md"
+      ]
+    },
+    "pstack/skills/setup-pstack/SKILL.md": {
+      "sha256": "b45512f6ca5e96e81681984683b7472bfe892581da3a89a73cca4159438f29ed",
+      "disposition": "overridden",
+      "reason": "Port optional behavioral and formal verification offers; preserve exact effort, panel configuration and current-chat model inheritance.",
+      "evidence": [
+        "overrides/setup-pstack/SKILL.md",
+        "docs/PARITY.md",
+        "docs/RELEASES.md"
+      ]
+    }
+  },
+  "additions": [
+    "create-skill/SKILL.md",
+    "poteto-mode/playbooks/code-review.md",
+    "pstack-harness/SKILL.md",
+    "pstack-harness/references/models.md",
+    "pstack-review/SKILL.md"
+  ]
+}
