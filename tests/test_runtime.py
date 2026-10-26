@@ -216,7 +216,7 @@ class RuntimeTests(unittest.TestCase):
             if relative.suffix != ".md":
                 with self.subTest(file=str(relative)):
                     self.assertEqual((installed / relative).read_bytes(), (original / relative).read_bytes())
-        for name in ("in-your-own-words", "sharpen"):
+        for name in sorted(path.parent.name for path in original.glob("*/SKILL.md")):
             for host in (".agents", ".claude"):
                 link = self.root / host / "skills" / name
                 with self.subTest(host=host, skill=name):
@@ -224,6 +224,23 @@ class RuntimeTests(unittest.TestCase):
                     self.assertEqual(link.resolve(), installed / name)
                     self.assertTrue((link / "SKILL.md").is_file())
         self.assertFalse((self.root / ".codex/skills").exists())
+
+    @unittest.skipUnless(shutil.which("node"), "Node is required for the statechart CLI")
+    def test_installed_statechart_help_and_invalid_input_need_no_optional_tools(self) -> None:
+        pstack.install(self.root, list(pstack.HOSTS))
+        script = self.root / ".agents/skills/statechart/scripts/statechart.mjs"
+        for arguments, expected in [(["--help"], 0), (["from-spec", "--nope"], 2)]:
+            with self.subTest(arguments=arguments):
+                run = subprocess.run([shutil.which("node"), str(script), *arguments],
+                                     cwd=self.root, capture_output=True, text=True, timeout=10)
+                self.assertEqual(run.returncode, expected, run.stderr)
+                if expected == 0:
+                    self.assertIn("from-spec", run.stdout)
+                    self.assertIn("from-chart", run.stdout)
+                    self.assertEqual(run.stderr, "")
+                else:
+                    self.assertIn("unknown argument --nope", run.stderr)
+                    self.assertEqual(run.stdout, "")
 
     def test_installed_helpers_run_and_reinstall_restores_executability(self) -> None:
         unrelated = self.root / "own-script.sh"

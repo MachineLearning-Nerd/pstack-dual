@@ -1,11 +1,11 @@
-# How pstack-dual differs from pstack 0.15.29
+# How pstack-dual differs from pstack 0.15.32
 
 The original source is pinned to official cursor/plugins commit
-`88d47514b82e7c44f00f2b2a72ff6dd12158038c`, pstack 0.15.29.
+`99b609a72323b70204eab407c622f436e858e112`, pstack 0.15.32.
 The complete pstack source is preserved in `upstream/pstack/`.
 `upstream.lock.json` records every imported file's hash.
 
-All 56 original top-level skills and all their supporting files are present in
+All 58 original top-level skills and all their supporting files are present in
 the generated package. The six additions are control-cli, control-ui, deslop,
 create-skill, pstack-harness, and pstack-review. The first three come from the
 same official Cursor commit. The other three provide portable authoring,
@@ -16,13 +16,21 @@ instructions and packaging. It does not prove every workflow runs on both hosts.
 
 ## The release changes are included
 
-The current snapshot preserves all 172 pstack source files. The generated bundle
-contains 62 skills. The required cursor-team-kit skills are unchanged from 0.15.25.
-The [release-by-release review](RELEASES.md) accounts for 0.15.26 through 0.15.29,
+The current snapshot preserves all 200 pstack source files. The generated bundle
+contains 64 skills. The required cursor-team-kit skills are unchanged from 0.15.25.
+The [release-by-release review](RELEASES.md) accounts for 0.15.26 through 0.15.32,
 including both formal-verification skills, complete ketchup decision lists,
 sharpen's prompt-only contract, corrected principles and TypeScript guidance.
 The new upstream Claude adapter is packaged as historical reference; the portable
 host contract remains authoritative.
+
+The 0.15.30 through 0.15.32 update adds statechart and ketchup-video, formal-check
+result routing, and every pstack fix through the pinned October 26 commit.
+All statechart scripts, tests, and fixtures are included. Model checking needs
+TLC and Java, and optional PNG rendering needs npm packages. Those runtimes are
+not bundled. Video rendering and host embedding depend on local capabilities.
+Reflection edits preserve managed bundles and links by changing the source or
+an approved unmanaged copy. No marketplace auto-update is enabled.
 
 The previous 0.15.17 to 0.15.25 update imported these improvements:
 
@@ -129,7 +137,7 @@ Overnight orchestration, transcript mining, bot UI, and other advanced workflows
 remain present as an experimental library. The supported verification target
 is investigation, bug fix, feature, and read-only review. Existing live receipts
 were recorded before this source update. No new live evaluation is claimed for
-0.15.17, 0.15.25, 0.15.29, or the current-chat-only model policy. Package checks and synthetic
+0.15.17, 0.15.25, 0.15.29, 0.15.32, or the current-chat-only model policy. Package checks and synthetic
 native-event tests do not establish live agent behavior under these instructions.
 
 ## Checks to repeat

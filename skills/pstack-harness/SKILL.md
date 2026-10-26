@@ -118,6 +118,27 @@ test that did not run assertions is not proof. Read-only investigation and revie
 may run safe commands but must not edit project files. Preserve explicit scope;
 the skill's autonomy language never grants external actions on its own.
 
+## Skill changes and optional runtimes
+
+Before applying an approved reflection edit, identify the skill's actual source
+and show the destination. Never edit a plugin cache, `.pstack-dual/bundle`, or a
+managed skill symlink. A path under `.agents/skills` or `.claude/skills` may point
+into that managed bundle. Editing through the link edits the bundle too.
+For this derivative, change `overrides/` or `tools/build.py` in its source checkout
+and regenerate, rather than editing generated `skills/`. For an independent
+skill copy, choose an unmanaged project or user skill directory and preserve
+existing managed links and unrelated skills. Reflection still requires approval
+of the accepted edits and does not open a PR or push.
+
+The `statechart` skill bundles Node scripts, not TLC, Java, or the PNG renderer.
+Its model commands can install TLC and Java with mise, and PNG rendering can
+download Pele and resvg with npm into a runtime cache. Importing the skill does
+not run those installers or verify a model. Keep validation in disposable
+fixtures with isolated caches. Use only the runtime work authorized by the task.
+The `ketchup-video` skill needs local video rendering tools. When the host cannot
+embed a video, provide the actual file and keep waiting decisions readable in
+text. If rendering fails, report it and follow the skill's text fallback.
+
 Use the host's available visualization tools or Mermaid for diagrams. An imported
 `/visualize` example does not establish that command exists. Screenshots and
 videos must come from actual captured artifacts.

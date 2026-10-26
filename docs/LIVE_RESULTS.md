@@ -2,7 +2,7 @@
 
 Actual CLI runs; no simulated agent results.
 These receipts use the earlier pstack 0.15.15 source. They do not verify the
-updated 0.15.17, 0.15.25 or 0.15.29 prompts. No new live evaluation was run for those updates.
+updated 0.15.17, 0.15.25, 0.15.29 or 0.15.32 prompts. No new live evaluation was run for those updates.
 
 | Host | Case | Result | Seconds | Native delegation observed |
 | --- | --- | --- | --- | --- |
