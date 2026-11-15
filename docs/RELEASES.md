@@ -1,11 +1,11 @@
 # Reviewed upstream releases
 
-The current pin is pstack **0.15.32**, official commit
-`99b609a72323b70204eab407c622f436e858e112`, observed on 2026-10-26.
-It includes the fixes committed after the 0.15.32 version bump.
-The original snapshot has 200 pstack files and 58 skills. With the six portable
-support skills, the generated bundle has 64 skills. The selected team-kit inputs
-add four files, making 204 locked files. File accounting is reproducible with
+The current pin is pstack **0.15.42**, official commit
+`bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7`, observed on 2026-11-15.
+The original snapshot has 560 pstack files and 58 skills. Most of the growth is
+the statechart compiler's test corpus. With the six portable support skills, the
+generated bundle has 64 skills. The selected team-kit inputs add four files,
+making 564 locked files. File accounting is reproducible with
 `python3 tools/check_upstream.py --json`.
 
 ## 0.15.26
@@ -112,6 +112,87 @@ Reviewed every pstack change through the current pinned commit.
 - Swarm fixes its numbered steps and result-table reference.
 - Official Claude plugin documentation explains third-party marketplace updates.
   This standalone package still updates through an explicit exact-commit import.
+
+## 0.15.33 and 0.15.34
+
+Reviewed through `740d2c0` and `164ced1`.
+
+- Statechart is now a TypeScript compiler run through one POSIX launcher,
+  `scripts/statechart SPEC.tla`. It checks the model with TLC, draws the Mermaid
+  chart, and reports the shortest path to each broken rule. The launcher needs
+  Node 22.18+ (or 23.6+), Bun 1.1.5+, or Deno 2.0+, with no build step. All
+  previous `.mjs` scripts and the chart-to-TLA+ skeleton and code audit are gone.
+- Property traces keep qualified INSTANCE action names such as `C!Up`.
+
+The first model check still installs TLC and Java with mise and needs the
+network. Importing or installing the skill does not provision them.
+
+## 0.15.35
+
+Reviewed through `ab1f702`.
+
+- Poteto-mode restates the user's goal in its first message, delegate briefs,
+  PR descriptions, and final reports, and steers running agents in the
+  background. Explain the Number applies before measuring.
+- Interrogate adversaries must prove each finding with a run, and the lead keeps
+  only findings a rerun confirms. Its reviewer, rubric, lead-judgment, and
+  code-quality references were deleted.
+- Arena drops or replaces rejected runner seats. Its cross-judge must come from
+  another vendor, and an inherited entry never judges.
+- Autopilot playbooks push each finished unit and block a PR only on a problem a
+  run shows. Autopilot-stack is Autopilot-full without the merge.
+- Ketchup-video adds subtitles and measures slide holds from the rendered file.
+
+## 0.15.36
+
+Reviewed through `c742dd6`.
+
+Orchestrate is agentic. The coordinator uses its own tools, Cursor's Project
+tracker and store, and PR and CI event subscriptions. The `orch` scripts and
+their tests were deleted.
+
+## 0.15.37 through 0.15.42
+
+Reviewed through `bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7`.
+
+- Sharpen's rewritten prompt asks the agent to prototype any choice an
+  experiment can settle. Product and preference calls stay with the user.
+- Statechart reports SANY's line and column for unreadable specs and draws
+  arrows into a parent state through its border.
+- Why is one short file. It answers from the commits and PR discussions behind
+  the code, cites the authors, marks inferences, and says what the record does
+  not answer. Its investigators, synthesizer, and source references are gone.
+  Recall starts its own investigators.
+- How is one file with one read-only subagent and a short brief. Poteto-mode and
+  its playbooks no longer route to how; they trace the code directly.
+- Default models moved to Fable 5.2, Opus 5.5, and Gemini 4 Carbon. Setup drops
+  the how and why roles and writes a `# defaults: 2` marker.
+
+## Reconciliation for 0.15.42
+
+- **How** follows the single-subagent design and brief, keeping the direct answer
+  for narrow questions. **Interrogate** follows the run-proven design, with a
+  worktree per adversary and the panel labeled independent same-model review.
+- **Feature and bug-fix** playbooks trace the subsystem directly and carry the
+  user's goal into briefs and reports.
+- **Arena** is adapted in `tools/build.py`. Runners and the judge inherit the
+  current chat's model, so the judge is a fresh agent that wrote no candidate,
+  not one from another vendor. Without this, inherited arms would never judge.
+  The design guide's arena sentence is adapted to match.
+- **Retired roles.** `how explorer`, `how explainer`, `why investigators`, and
+  `why synthesizer` are no longer resolvable. Configs that name them stay valid,
+  and `validate-config` lists them under `retired_roles`.
+- **Orchestrate.** pstack-harness maps the Cursor Project tracker, store, event
+  subscriptions, and cloud workers to an approved `notes.md`, local worktree
+  workers, and explicit `gh` or `watch-pr` status checks. No polling loop starts.
+- **Validation.** Gemini and Fable slugs are rewritten to inheritance, and the
+  bundle check rejects any that remain. It also rejects plain-text
+  `references/*.md` mentions whose file is missing. That gap had let the old how
+  and interrogate overrides point at deleted references.
+
+Excluded: the new default models, the `# defaults: 2` marker and Grok-default
+migration, the cross-vendor judge requirement, and cloud workers. Every delegate
+still inherits the chat model.
 
 ## Additional reconciliation in pstack-dual
 

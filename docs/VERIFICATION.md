@@ -37,7 +37,7 @@ delegation in each host. Installed payload validation and all 11 rendered native
 agent definitions were checked from a separate temporary installation. The pinned
 upstream update command was exercised without changing the selected source version.
 
-Those live receipts were recorded for the 0.15.15 source. The 0.15.17, 0.15.25, 0.15.29 and 0.15.32
+Those live receipts were recorded for the 0.15.15 source. The 0.15.17, 0.15.25, 0.15.29, 0.15.32 and 0.15.42
 updates use package and unit checks; no new live result or unchanged agent behavior is
 implied. See [the source comparison](PARITY.md) for the remaining differences.
 
@@ -69,7 +69,7 @@ pstack_test_dir=$(mktemp -d /tmp/pstack-script-check.XXXXXX)
 cp -a skills/poteto-mode/scripts/. "$pstack_test_dir/"
 cd "$pstack_test_dir"
 bun install --frozen-lockfile
-bun test orch watch-pr check-plan.test.ts
+bun test watch-pr check-plan.test.ts
 ./node_modules/.bin/tsc --project watch-pr/tsconfig.json --noEmit --strict
 ```
 
@@ -96,40 +96,22 @@ both hosts and execute the installed statechart help and invalid-input paths.
 The helper suite passed 82 tests with 282 assertions, and strict TypeScript
 checking passed, using Bun 1.4.3 in a disposable copy with frozen dependencies.
 
-Statechart's Node suite has optional-tool discovery at module load. A plain
-`node --test`, even with a name filter, can install TLC, Java, and the PNG
-renderer. Do not run it as an ordinary package check against user caches.
-The isolated run used Node 25.2.1, a nonexistent `TLA2TOOLS` path, and a temporary
-`XDG_CACHE_HOME` containing a renderer entry that deliberately throws. Its npm
-cache was isolated and offline. It passed 50 tests, skipped 100 tests requiring
-real TLC or PNG rendering, and failed none. All 22 JavaScript modules, including
-the test module, passed syntax checks. Fake tool-installation and failure paths
-were exercised, but real model checking and PNG rendering were not.
+The 0.15.32 statechart receipts above cover the retired `.mjs` scripts.
 
-To repeat the statechart checks without provisioning optional tools, first copy
-`skills/statechart/` to a disposable directory. From that copy, run this Python
-snippet with the installed Node executable on `PATH`:
+For the 0.15.42 import at `bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7`, 66 Python
+tests passed, including new checks for retired roles, rejected Gemini and Fable
+slugs, missing plain-text references, and the same-model arena judge. The
+installed `scripts/statechart` launcher kept its executable bit and, on Node
+25.2.1, rejected a missing spec, an unknown option, and a missing config with
+exit 2 before reaching TLC, Java, or mise. Upstream's own statechart suite
+(`node --test test/*.test.ts`, which needs `fast-check`) and the Bun helper suite
+were not run for this import, so neither is claimed. Orch tests no longer exist
+upstream. No real model check, PNG output, or live host session ran.
 
-```python
-import os
-from pathlib import Path
-import subprocess
-import tempfile
-
-with tempfile.TemporaryDirectory(prefix="statechart-check-") as scratch:
-    base = Path(scratch)
-    env = dict(os.environ, XDG_CACHE_HOME=str(base / "cache"),
-               TLA2TOOLS=str(base / "missing-tlc.jar"),
-               npm_config_cache=str(base / "npm-cache"), npm_config_offline="true")
-    query = "import {cacheDir} from './scripts/render.mjs'; console.log(cacheDir())"
-    cache = subprocess.check_output(["node", "--input-type=module", "-e", query],
-                                    env=env, text=True).strip()
-    entry = Path(cache) / "entry.mjs"
-    entry.parent.mkdir(parents=True)
-    entry.write_text('throw new Error("Optional renderer disabled for this check");\n')
-    subprocess.run(["node", "--test", "scripts/test/statechart.test.mjs"],
-                   env=env, check=True)
-```
+Before running the upstream statechart suite, copy `skills/statechart/` to a
+disposable directory and install its frozen dev dependency there. Tests that
+need real TLC may call mise and download TLC and Java, so run them only with an
+isolated cache and explicit approval for the network.
 
 These receipts do not establish live LLM behavior, a formal proof, actual PNG
 output, or a rendered ketchup-video. The two new workflows retain those runtime

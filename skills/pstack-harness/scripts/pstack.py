@@ -17,9 +17,10 @@ HOSTS = ("codex", "claude-code")
 INHERIT = {"inherit-parent", "inherit", "auto"}
 EFFORTS = {"low", "medium", "high", "xhigh", "max", "ultra"}
 ROLES = {"default", "feature", "refactoring", "bug-fix", "perf-issue", "hillclimb",
-         "judgment and prose", "hardest tasks", "how explorer", "how explainer",
-         "why investigators", "why synthesizer", "reflect tooling", "reflect judgment",
+         "judgment and prose", "hardest tasks", "reflect tooling", "reflect judgment",
          "reflect divergent", "reflect synthesizer", "swarm workers", "trail reviewer"}
+# Upstream 0.15.40-0.15.41 removed these delegations; old configs stay readable.
+RETIRED_ROLES = {"how explorer", "how explainer", "why investigators", "why synthesizer"}
 PANELS = {"arena runners", "arena cross-judge pool", "architect runners", "interrogate reviewers"}
 LEDGER = ".pstack-dual/install.json"
 
@@ -69,7 +70,7 @@ def validate_config(config: dict[str, Any]) -> None:
             raise ValueError(f"invalid {host} section")
         if "default" in section:
             validate_entry(section["default"], host)
-        for field, allowed in (("roles", ROLES), ("panels", PANELS)):
+        for field, allowed in (("roles", ROLES | RETIRED_ROLES), ("panels", PANELS)):
             values = section.get(field, {})
             if not isinstance(values, dict) or set(values) - allowed:
                 raise ValueError(f"unknown {host} {field}: {set(values) - allowed if isinstance(values, dict) else values}")
@@ -83,7 +84,14 @@ def validate_config(config: dict[str, Any]) -> None:
                     validate_entry(value, host)
 
 
+def retired_roles(config: dict[str, Any]) -> list[str]:
+    return sorted({role for host in HOSTS for role in config.get(host, {}).get("roles", {})
+                   if role in RETIRED_ROLES})
+
+
 def resolve(host: str, project: Path, role: str, user_root: Path | None = None) -> list[dict[str, Any]]:
+    if role in RETIRED_ROLES:
+        raise ValueError(f"retired role: {role}; the skill no longer delegates it")
     if role not in ROLES | PANELS:
         raise ValueError(f"unknown role: {role}")
     field = "panels" if role in PANELS else "roles"
@@ -333,8 +341,11 @@ def validate_bundle() -> dict[str, Any]:
         if "node_modules" in path.relative_to(source).parts:
             continue
         text = path.read_text()
-        if re.search(r"~?/\.cursor/|grok-\d|claude-opus-\d", text):
+        if re.search(r"~?/\.cursor/|grok-\d|gemini-\d|claude-(?:opus|fable|sonnet|haiku)-\d", text):
             raise ValueError(f"unadapted Cursor path/model: {path}")
+        for target in re.findall(r"(?<![\w./-])(references/[\w./-]+\.md)\b", text):
+            if not (path.parent / target).exists() and not (path.parent.parent / target).exists():
+                raise ValueError(f"broken plain-text reference {target}: {path}")
         for target in re.findall(r"\]\(([^)\s]+)\)", text):
             if "://" in target or target.startswith(("#", "mailto:")) or any(x in target for x in "<>*"):
                 continue
@@ -396,8 +407,11 @@ def main(argv: list[str] | None = None) -> int:
         elif args.command == "validate":
             result = validate_bundle()
         elif args.command == "validate-config":
-            validate_config(load_json(args.file))
+            config = load_json(args.file)
+            validate_config(config)
             result = {"valid": True, "file": str(args.file)}
+            if retired_roles(config):
+                result["retired_roles"] = retired_roles(config)
         else:
             project = args.project.resolve()
             if not project.is_dir():

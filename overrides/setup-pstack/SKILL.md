@@ -26,6 +26,12 @@ Use `inherit-parent` for all model fields. Existing valid configuration files
 remain compatible: explicit legacy model choices are ignored and reported through
 `ignored_model` in role resolution. Do not rewrite user configuration merely to
 remove those choices. Effort and panel size remain configurable independently.
+Roles `how explorer`, `how explainer`, `why investigators`, and `why synthesizer`
+are retired: how and why no longer delegate them. A config that names them stays
+valid, and `validate-config` lists them under `retired_roles`. Tell the user they
+have no effect and offer to remove them; remove them only when the user agrees.
+Upstream's new default models and `# defaults: 2` marker belong to Cursor's model
+rule and do not apply here.
 
 Validate with `pstack.py validate-config --file <path>` and resolve representative
 code, judgment, and panel roles with `pstack.py resolve`; every arm must have

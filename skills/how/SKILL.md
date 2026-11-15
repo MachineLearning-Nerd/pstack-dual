@@ -16,30 +16,32 @@ Read only the references needed for this task.
 # How
 
 Read ../pstack-harness/SKILL.md. Remain read-only when answering an investigation.
-Find the relevant entry point, callers, authoritative types, and the smallest set
-of files that establish behavior. Do not dump the whole repository into context.
+If the scope is ambiguous, state your interpretation and explore. The user can
+redirect.
 
-Answer narrow questions about one function or file directly with evidence.
-For a substantial single-module explanation, delegate a fresh read-only explainer
-using references/explainer-prompt.md without its explorer-findings section.
-Replace its synthesis premise with an instruction to explore the source and
-explain it in one pass; remove statements that prior explorers did the research.
-For work spanning subsystems, delegate two
-to four read-only explorers using references/explorer-prompt.md, with distinct
-questions and file pointers. Resolve `how explorer` for discovery and `how
-explainer` for synthesis. Every delegate inherits the current chat's model.
-Assess each brief under [the effort contract](../pstack-harness/SKILL.md#task-difficulty-and-effort).
+## 1. Explain
 
-Give a fresh explainer the explorer findings and original question. The explainer
-owns the final explanation; the lead makes only light factual or clarity edits.
-Brief researchers with questions, not presumed answers. If delegation is
-unavailable, explain the missing independent research or synthesis and answer
-from the evidence available. Never fabricate delegation or runtime checks.
+Answer a narrow question about one function or file directly, citing the source.
+Otherwise spawn one fresh read-only agent that explores and explains in one pass.
+It inherits the current chat's model; resolve `judgment and prose` for its effort
+under [the effort contract](../pstack-harness/SKILL.md#task-difficulty-and-effort).
+Give it the user's question and this brief:
 
-Explain Overview, Key Concepts, How It Works, Where Things Live, and Gotchas at
-the depth the question needs. Cite actual files and symbols. Distinguish observed
-runtime results from source inference, and identify missing evidence. For intent
-or history, route to why only when that evidence can answer the question.
+> You are writing an architectural explanation for a senior engineer. Explore the
+> codebase and write an explanation that a senior engineer unfamiliar with this
+> area could read and walk away with a solid mental model. They should understand
+> the architecture well enough to start working in it confidently. Cite actual
+> files and symbols, and separate what you observed running from what you inferred
+> from source. You have read-only access to the codebase.
 
-Apply unslop to the reply. In an investigation, do not create a PR, edit the code,
-or trigger implementation merely because a design question arose.
+Brief it with the question, not a presumed answer. If delegation is unavailable,
+say so and answer from the evidence you gathered yourself. Never claim a
+delegation or runtime check that did not run.
+
+## 2. Present
+
+Present the agent's output. Light edits for clarity or context from the
+conversation are fine. Do not substantially rewrite it. Name any missing evidence.
+For intent or history, route to why only when that evidence can answer the
+question. Apply unslop to the reply. In an investigation, do not create a PR, edit
+the code, or trigger implementation merely because a design question arose.

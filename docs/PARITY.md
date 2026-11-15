@@ -1,7 +1,7 @@
-# How pstack-dual differs from pstack 0.15.32
+# How pstack-dual differs from pstack 0.15.42
 
 The original source is pinned to official cursor/plugins commit
-`99b609a72323b70204eab407c622f436e858e112`, pstack 0.15.32.
+`bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7`, pstack 0.15.42.
 The complete pstack source is preserved in `upstream/pstack/`.
 `upstream.lock.json` records every imported file's hash.
 
@@ -16,19 +16,20 @@ instructions and packaging. It does not prove every workflow runs on both hosts.
 
 ## The release changes are included
 
-The current snapshot preserves all 200 pstack source files. The generated bundle
+The current snapshot preserves all 560 pstack source files. The generated bundle
 contains 64 skills. The required cursor-team-kit skills are unchanged from 0.15.25.
-The [release-by-release review](RELEASES.md) accounts for 0.15.26 through 0.15.32,
+The [release-by-release review](RELEASES.md) accounts for 0.15.26 through 0.15.42,
 including both formal-verification skills, complete ketchup decision lists,
 sharpen's prompt-only contract, corrected principles and TypeScript guidance.
 The new upstream Claude adapter is packaged as historical reference; the portable
 host contract remains authoritative.
 
-The 0.15.30 through 0.15.32 update adds statechart and ketchup-video, formal-check
-result routing, and every pstack fix through the pinned October 26 commit.
-All statechart scripts, tests, and fixtures are included. Model checking needs
-TLC and Java, and optional PNG rendering needs npm packages. Those runtimes are
-not bundled. Video rendering and host embedding depend on local capabilities.
+The 0.15.33 through 0.15.42 update replaces statechart with a TypeScript
+compiler, cuts how and why to one file each, makes interrogate keep only
+run-proven findings, and makes Orchestrate agentic. All statechart sources, tests,
+and corpus fixtures are included. The launcher needs Node 22.18+, Bun, or Deno;
+model checking needs TLC and Java, which are not bundled. The earlier 0.15.30
+through 0.15.32 update added statechart and ketchup-video. Video rendering and host embedding depend on local capabilities.
 Reflection edits preserve managed bundles and links by changing the source or
 an approved unmanaged copy. No marketplace auto-update is enabled.
 
@@ -57,9 +58,10 @@ must identify setup steps that remain unverified on the real target. Deep debugg
 also proposes a cheap ongoing signal when it would catch the cause earlier.
 
 The how and interrogate entry points use explicit portable overrides instead
-of copying the original entry points. Their original reference files receive
-the release's edits. Interrogate now loads the original intent, rubric,
-code-quality lens, lead-judgment framework, and agreement map.
+of copying the original entry points. Upstream 0.15.35 and 0.15.41 deleted their
+reference files. How now spawns one read-only explainer with the upstream brief.
+Interrogate runs adversaries that must prove findings with a run, and keeps only
+findings the lead reproduces.
 
 ## Chosen workflow policy
 
@@ -70,7 +72,8 @@ Narrow questions and mechanical edits retain the documented shortcuts.
 | Original pstack | pstack-dual | Decision |
 | --- | --- | --- |
 | Chooses Opus and Grok for different roles by default. | Every delegate inherits the current chat's model. Legacy explicit model choices are ignored and reported. Effort and panel size remain configurable. | The user controls model selection in the chat. Panels provide independent same-model review, not model diversity. |
-| A simple how question gets an explainer agent. A complex question gets two to four explorers and a separate explainer. | Narrow one-function or one-file questions can be answered directly. Substantial single-module work gets a fresh explainer. Cross-subsystem work gets two to four explorers and a fresh explainer. | Restore separate research and synthesis for substantial investigations. Keep the small-question shortcut. |
+| How spawns one read-only subagent that explores and explains in one pass. | Narrow one-function or one-file questions can be answered directly. Other questions get one fresh read-only explainer with the upstream brief. | Follow upstream's single-explainer design. Keep the small-question shortcut. |
+| Arena's cross-judge comes from another model vendor and is skipped when none can run. | The judge is a fresh read-only agent on the current chat's model that wrote no candidate. | Keep independent judging under the current-chat model policy; never call it model diversity. |
 | Features always run architect. Several valid implementation shapes require arena. | Substantial features compare at least two designs. Substantial implementations with multiple valid shapes use arena and independent cross-judging. Mechanical one-file edits may skip with a reason. | Restore the original comparison gates for substantial features. Keep the mechanical-edit shortcut. |
 | Bug hunting explicitly narrows hypotheses and proves the mechanism at runtime before the design step. Architect runs whenever the fix crosses a function boundary. | Explicit hypothesis elimination, runtime cause proof, and architect for fixes crossing function boundaries are restored. Unavailable runtime evidence is reported as unconfirmed. | Follow the original debugging gates with host-compatible delegation. |
 | Saves small ordered commits and ends core tasks by opening a PR. Cheap bug tests precede the fix in commit history. | Completes ordinary changes locally. It checks that a regression test fails before the fix when that test earns its place, without requiring separate commits. | Keep commits and PRs within the requested scope. Use ordered failing-test and fix commits when committing is requested. |
@@ -137,7 +140,7 @@ Overnight orchestration, transcript mining, bot UI, and other advanced workflows
 remain present as an experimental library. The supported verification target
 is investigation, bug fix, feature, and read-only review. Existing live receipts
 were recorded before this source update. No new live evaluation is claimed for
-0.15.17, 0.15.25, 0.15.29, 0.15.32, or the current-chat-only model policy. Package checks and synthetic
+0.15.17, 0.15.25, 0.15.29, 0.15.32, 0.15.42, or the current-chat-only model policy. Package checks and synthetic
 native-event tests do not establish live agent behavior under these instructions.
 
 ## Checks to repeat

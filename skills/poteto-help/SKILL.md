@@ -29,7 +29,7 @@ For context across previous chats, use [recall](../recall/SKILL.md). These are
 different scopes. Ketchup stays read-only and follows [bro](../bro/SKILL.md) for
 plain language. Use `$ketchup` in Codex or `/ketchup` in Claude.
 Use [ketchup-video](../ketchup-video/SKILL.md) for the same catch-up as a short
-silent slide video, with every waiting decision in text below it. Rendering
+subtitled slide video, with every waiting decision in text below it. Rendering
 requires local video tools and a host that can present the resulting file.
 
 Use [in-your-own-words](../in-your-own-words/SKILL.md) to restate the user's goals
@@ -43,13 +43,16 @@ check with explicit bounds, code links and a demonstrated failing variant. Use
 [maintain-formal-verification-skill](../maintain-formal-verification-skill/SKILL.md)
 when covered code changes after its recorded sync commit. A passing stale model
 does not prove current code correct. Formal verification tools are not bundled.
-Use [statechart](../statechart/SKILL.md) to draw a TLA+ model as a Mermaid chart,
-show bug paths, or turn an agreed chart into a model. Its Node scripts are
-bundled. TLC, Java, and the optional PNG renderer are separate runtime tools.
+Use [statechart](../statechart/SKILL.md) to check a TLA+ model and show what the
+user sees as a Mermaid chart, with the shortest path to each state that breaks a
+rule. Its TypeScript launcher is bundled and needs Node 22.18+, Bun 1.1.5+, or
+Deno 2.0+. TLC and Java are separate runtime tools.
 
 Core supported workflows are investigation (how), bug fix, feature, and read-only
-code review (pstack-review/interrogate). Principles and local verification skills
-are preserved from upstream. Advanced orchestration, transcript mining, bot UI,
+code review (pstack-review/interrogate). Interrogate keeps only findings an
+adversary proved with a run and the lead reproduced. Why answers from the commits
+and PR discussion behind the code and says what the record does not answer.
+Principles and local verification skills are preserved from upstream. Advanced orchestration, transcript mining, bot UI,
 and overnight workflows are retained as an experimental library; inspect the
 host contract and prerequisites before using them. No automation is installed.
 

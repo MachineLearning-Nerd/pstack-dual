@@ -4,7 +4,8 @@ You own the design. Delegate implementation while retaining the final decision.
 Read pstack-harness for native mechanics and its
 [effort contract](../../pstack-harness/SKILL.md#task-difficulty-and-effort).
 
-1. Use how to establish the affected contracts, callers, and behavior.
+1. Trace the affected subsystem yourself: its contracts, callers, and behavior.
+   Restate the user's goal in every delegate brief and in the final report.
 2. Name the data shape and expected user-visible result. For a substantial
    feature, use architect to compare at least two designs before implementation.
    A mechanical one-file edit may skip the comparison with a stated reason.

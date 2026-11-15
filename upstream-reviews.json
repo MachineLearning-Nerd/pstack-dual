@@ -11,9 +11,9 @@
       ]
     },
     "pstack/.cursor-plugin/plugin.json": {
-      "sha256": "66b10ca48989920b65f150f80954a59adb4bb787c197a13e27f91fe793b996a3",
+      "sha256": "4b0f620c54b2ef28f89808d3e37ba74949bc24f9d5e05081f4a76ec4e3a942f6",
       "disposition": "source-only",
-      "reason": "Reviewed 0.15.30 through 0.15.32 version bumps. Preserve the official manifest as locked source; standalone skill and native-agent delivery remains authoritative.",
+      "reason": "Reviewed 0.15.33 through 0.15.42 version bumps. Preserve the official manifest as locked source; standalone skill and native-agent delivery remains authoritative.",
       "evidence": [
         "tools/pstack.py",
         "docs/RELEASES.md"
@@ -38,9 +38,9 @@
       ]
     },
     "pstack/README.md": {
-      "sha256": "ce7d9ab68491d329ca88bd2a4b5f34b46390c196a5838fdcc1eae4633eca5fc9",
+      "sha256": "3a5ba29cdd573ce9a263436c61841cfc571f5286508d3f71dd62efe6bfbf3a5d",
       "disposition": "source-only",
-      "reason": "Reviewed the new statechart and ketchup-video routes and third-party Claude marketplace auto-update instructions. Adopt skill discovery locally; standalone updates use the exact-pin synchronizer rather than marketplace auto-update.",
+      "reason": "Reviewed 0.15.42 routes: one-file how and why, run-proven interrogate, statechart compiler, subtitled ketchup-video, sharpen prototypes, Autopilot-stack as Autopilot-full without merge, and Fable/Opus/Gemini default models. Adopt workflow descriptions locally; model defaults and Cursor rule migration do not apply because every delegate inherits the chat model.",
       "evidence": [
         "README.md",
         "docs/RELEASES.md"
@@ -57,12 +57,13 @@
       ]
     },
     "pstack/automations/benny/FOR_AGENTS.md": {
-      "sha256": "a125e317dec1b8731fdc71f404c669f1127a73af932f7a7b8b8744a5542328a7",
+      "sha256": "17d370bf1d97e12924a5b291fa183f2270c310836c3355617fcc97d65b0b2bd1",
       "disposition": "dormant-reference",
-      "reason": "Preserve this original automation resource as dormant reference. No routine, credentials, registration or external action is enabled.",
+      "reason": "Reviewed removal of how from Benny's required shared skills. Automations remain dormant reference material; nothing is installed or scheduled.",
       "evidence": [
         "docs/PARITY.md",
-        "tools/build.py"
+        "tools/build.py",
+        "docs/RELEASES.md"
       ]
     },
     "pstack/automations/benny/README.md": {
@@ -75,12 +76,13 @@
       ]
     },
     "pstack/automations/benny/skills/reproduce-and-fix-issues/SKILL.md": {
-      "sha256": "1363cc07343fe86aab42853b1bd4563288cbcbdf12f1c265b3b3b1afa25c09cb",
+      "sha256": "809659da0bbd0303d2a42dbe380dd117ae06b6fa3e19e4a31832a2756ae841fe",
       "disposition": "dormant-reference",
-      "reason": "Preserve this original automation resource as dormant reference. No routine, credentials, registration or external action is enabled.",
+      "reason": "Reviewed the change to trace the action directly instead of through how. Dormant reference; no automation is installed.",
       "evidence": [
         "docs/PARITY.md",
-        "tools/build.py"
+        "tools/build.py",
+        "docs/RELEASES.md"
       ]
     },
     "pstack/automations/benny/skills/reproduce-and-fix-issues/references/control-adapter.md": {
@@ -111,21 +113,23 @@
       ]
     },
     "pstack/automations/benny/skills/setup-benny/SKILL.md": {
-      "sha256": "5a3cbe63360c9f6373b6cb6c79a1eaf7e0eba181bfaa1577e2e6431af3407282",
+      "sha256": "1b1298536804eef289718f497a42f48aec135c8f4175b03e5ecfa11075758c59",
       "disposition": "dormant-reference",
-      "reason": "Preserve this original automation resource as dormant reference. No routine, credentials, registration or external action is enabled.",
+      "reason": "Reviewed removal of how from the project-scope dependency check. Dormant reference; no automation is installed.",
       "evidence": [
         "docs/PARITY.md",
-        "tools/build.py"
+        "tools/build.py",
+        "docs/RELEASES.md"
       ]
     },
     "pstack/automations/benny/skills/triage-issue-reports/SKILL.md": {
-      "sha256": "216a758b8711e64d19a55e6032c496527daac6364d010611040f3c04ef1a448f",
+      "sha256": "e88bb1ccc619f93d4b787bd9156fba5159f061c653fca00b6f08c65b6c77701a",
       "disposition": "dormant-reference",
-      "reason": "Preserve this original automation resource as dormant reference. No routine, credentials, registration or external action is enabled.",
+      "reason": "Reviewed the change to trace the path directly instead of through how. Dormant reference; no automation is installed.",
       "evidence": [
         "docs/PARITY.md",
-        "tools/build.py"
+        "tools/build.py",
+        "docs/RELEASES.md"
       ]
     },
     "pstack/automations/benny/skills/triage-issue-reports/references/routing.example.md": {
@@ -165,27 +169,27 @@
       ]
     },
     "pstack/docs/harness/claude-code.md": {
-      "sha256": "c79e2283d3a83c6be3dd1cac33f9c074067c95e610ae6e0a16d9fdee84058927",
+      "sha256": "56d732c4b2375e355b5316a8467f080b73f2a4e36124db96155f4c1c66edee11",
       "disposition": "dormant-reference",
-      "reason": "Keep the official Claude adapter as historical reference. Reconcile its future host fixes explicitly; our current-model, exact-effort, scoped-session and standalone installation contract remains authoritative.",
+      "reason": "Reviewed the new Fable, Opus high-fast, and Gemini slug mapping for the Cursor plugin's Claude Code adapter. Dormant reference; this derivative's pstack-harness omits every model override.",
       "evidence": [
         "overrides/pstack-harness/SKILL.md",
         "docs/RELEASES.md"
       ]
     },
     "pstack/plugin.json": {
-      "sha256": "2197363ebd8e7995e2a57417b1fc5fd23f40a4139f9c50634feca61effd23615",
+      "sha256": "007b81ad0923dee703af12393223d2af358740006ef086c499b2017b1acff8e3",
       "disposition": "source-only",
-      "reason": "Reviewed 0.15.30 through 0.15.32 version bumps. Preserve the official manifest as locked source without activating duplicate Cursor or Claude marketplace delivery.",
+      "reason": "Reviewed 0.15.33 through 0.15.42 version bumps. Preserve the official manifest as locked source; standalone skill and native-agent delivery remains authoritative.",
       "evidence": [
         "tools/pstack.py",
         "docs/RELEASES.md"
       ]
     },
     "pstack/skills/how/SKILL.md": {
-      "sha256": "08a00079bb15b4258874ac3ff62d4ca7e94350ffedb521d0fd296dc9dd21904e",
+      "sha256": "23d5cc79a449b9838242e7af5563aa8a4f0417bab136bbcc054b4bebc7284680",
       "disposition": "overridden",
-      "reason": "Preserve source-grounded research and separate synthesis with native read-only delegation and the documented narrow-question shortcut.",
+      "reason": "Reviewed 0.15.41 cut of how to one subagent with a short brief and no explorers, explainer template, or model routing. Override adopts the single read-only explainer and brief, keeps the direct answer for narrow questions, effort contract, current-chat model, and read-only investigation scope.",
       "evidence": [
         "overrides/how/SKILL.md",
         "docs/PARITY.md",
@@ -193,9 +197,9 @@
       ]
     },
     "pstack/skills/interrogate/SKILL.md": {
-      "sha256": "a16dfe179005abc22a4651b82f25b0c8ab953284276efe4e6dc341958fb63647",
+      "sha256": "3f3c2e9b8cf6b180dba9f32a4aff85e5691b09805232468e37a0ba45437a9984",
       "disposition": "overridden",
-      "reason": "Keep intent, rubric, independent reviewers and lead judgment while inheriting the current chat model and remaining read-only.",
+      "reason": "Reviewed 0.15.35 rewrite: adversaries run arena Phase A steps 3-4 and B, prove each finding with a run, and the lead keeps only findings a rerun confirms; rubric and lead-judgment references were deleted. Override adopts the run-proven flow and output, uses worktrees per adversary, resolves interrogate reviewers for effort and arm count, and labels the panel independent same-model review.",
       "evidence": [
         "overrides/interrogate/SKILL.md",
         "docs/PARITY.md",
@@ -203,9 +207,9 @@
       ]
     },
     "pstack/skills/poteto-help/SKILL.md": {
-      "sha256": "587793b0f9959dbea7d5d009b8a6513795380d7150dd478a6cb05e604058e315",
+      "sha256": "5b14be54fc543b8f282953febc641f19f03919e7f77858347baa6957522f0c51",
       "disposition": "overridden",
-      "reason": "Added both new upstream routes to portable help. Preserve statechart and ketchup-video workflows with explicit optional-runtime and host-display requirements, current-chat models and shared installation paths.",
+      "reason": "Reviewed the why removal from the Cursor-subagent list, subtitled ketchup-video, new statechart description, and Autopilot-stack phrasing. Override updates ketchup-video, statechart runtime, interrogate, and why descriptions for Claude Code and Codex.",
       "evidence": [
         "overrides/poteto-help/SKILL.md",
         "docs/PARITY.md",
@@ -213,9 +217,9 @@
       ]
     },
     "pstack/skills/poteto-mode/SKILL.md": {
-      "sha256": "2755f102e7a6d0496b429d1031a22fb353e1f3d523543367caeaae5c4ed6f544",
+      "sha256": "c1816b328fa174361dfb719f31ecc264991c8f020b0ba971ea79ca223c79c047",
       "disposition": "synthesized",
-      "reason": "Keep the upstream playbook and principles while replacing exactly matched delegation, effort and review-routing instructions under the portable harness.",
+      "reason": "Reviewed the first-message goal restatement, background steers, Explain the Number before measuring, Autopilot-stack wording, removal of the how trigger, and Fable/Opus/Gemini defaults with slug fallback chains. The goal restatement and wording flow through; build.py replaces the delegation and model-matching paragraphs so every delegate inherits the current chat's model.",
       "evidence": [
         "tools/build.py",
         "docs/PARITY.md",
@@ -223,9 +227,9 @@
       ]
     },
     "pstack/skills/poteto-mode/playbooks/bug-fix.md": {
-      "sha256": "66e26542dad131cfd7df80ac0cdf81ed4d85e7b5e3f0eb65b933888760c4831f",
+      "sha256": "e58b534e020e19629cd47c15e4210e594edfacea212af1e558a1d55bd311b5b3",
       "disposition": "overridden",
-      "reason": "Keep hypothesis elimination, reproduction and cross-function design review; use native host verification and authorized local completion.",
+      "reason": "Reviewed the switch from how to a direct trace and the new default bug-fix model. Override traces the mechanism directly, keeps why for regression history, opens the report with the user's goal, and keeps current-chat model inheritance.",
       "evidence": [
         "overrides/poteto-mode/playbooks/bug-fix.md",
         "docs/PARITY.md",
@@ -233,9 +237,9 @@
       ]
     },
     "pstack/skills/poteto-mode/playbooks/feature.md": {
-      "sha256": "af8ce700b99953741cb547e34308fde0cf6b98ce67e1652c800d0deedf53aba1",
+      "sha256": "f52d323f38a1ac2e8ab21b35e34bb10ab315436badfb74aa84bc466ee2ca522b",
       "disposition": "overridden",
-      "reason": "Restore all-consumer verification and coupled-owner checkpoint rules; keep substantial design gates and local completion within user scope.",
+      "reason": "Reviewed the switch from how to a direct trace of the affected subsystem and the new default feature model. Override traces directly, restates the user's goal in briefs and the report, and keeps the architect, arena, and current-chat model gates.",
       "evidence": [
         "overrides/poteto-mode/playbooks/feature.md",
         "docs/PARITY.md",
@@ -243,9 +247,9 @@
       ]
     },
     "pstack/skills/setup-pstack/SKILL.md": {
-      "sha256": "b45512f6ca5e96e81681984683b7472bfe892581da3a89a73cca4159438f29ed",
+      "sha256": "4c53ea532bbfc429833c8cf5480a0fffcd10c3e32bc26256feff3d7ee7c9da85",
       "disposition": "overridden",
-      "reason": "Port optional behavioral and formal verification offers; preserve exact effort, panel configuration and current-chat model inheritance.",
+      "reason": "Reviewed removal of how and why roles, the defaults-2 marker and migration of old Grok defaults, budget-relative effort targets, and the cross-judge vendor rule. Override keeps native setup with inherited models, reports the four retired roles through validate-config, and excludes Cursor model defaults and marker.",
       "evidence": [
         "overrides/setup-pstack/SKILL.md",
         "docs/PARITY.md",

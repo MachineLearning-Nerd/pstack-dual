@@ -39,13 +39,15 @@ def adapt(text: str) -> str:
         "A second opinion is the same prompt against a different model. Agreement is high-signal.":
         "A second opinion is the same prompt given to a fresh agent on the current chat's model. Agreement is independent same-model evidence, not model diversity.",
         "**interrogate** skill (multi-model adversarial)": "**interrogate** skill (independent adversarial)",
+        "A read-only judge from a different model vendor scores every candidate against a rubric. When no model from another vendor can run, the coordinator skips the judge and picks the base itself.":
+        "A fresh read-only judge on the current chat's model scores every candidate against a rubric, as independent same-model judgment. When no judge can run, the coordinator skips it and picks the base itself.",
         "for diverse-model review. Respect what the skill prescribes": "for independent same-model review. Respect what the skill prescribes",
         "**Just do it.** Use any MCP tool. Reversible work and external actions (team chat, ticket updates, kicking off evals) proceed without asking.":
         "**Act within scope.** Complete authorized reversible work. External messages and other external actions require authorization from the user's task; this skill grants none.",
     }
     for before, after in substitutions.items():
         text = text.replace(before, after)
-    text = re.sub(r"(?:claude-(?:opus|fable|sonnet|haiku)-[\w.-]+|grok-\d[\w.-]*)", "inherit-parent", text)
+    text = re.sub(r"(?:claude-(?:opus|fable|sonnet|haiku)-[\w.-]+|grok-\d[\w.-]*|gemini-\d[\w.-]*)", "inherit-parent", text)
     return text
 
 
@@ -87,6 +89,19 @@ def generate(destination: Path) -> None:
         header = re.sub(r"^(mode|icon|color|reminder):.*\n", "", header, flags=re.M)
         if path.parent.name != "pstack-harness":
             body = "\n" + ADAPTER + body.lstrip("\n")
+        if path.parent.name == "arena":
+            body = replace_once(
+                body,
+                r"^3\. Pick the runners\..*?(?=\n)",
+                "3. Pick the runners. Resolve `arena runners` through pstack-harness and spawn one runner per resolved arm. Every runner inherits the current chat's model; omit the model argument. If a spawn fails, drop that seat and say so; with fewer than two runners left, add one more arm on the current chat's model. Spawn more runners when the arena covers multiple design directions. Pick each runner's effort per [the effort contract](../pstack-harness/SKILL.md#task-difficulty-and-effort).",
+                "arena runner selection step",
+            )
+            body = replace_once(
+                body,
+                r"^After all Phase B candidates complete, choose one model.*?did not run\. ",
+                "After all Phase B candidates complete, spawn one fresh read-only judge that wrote no candidate. It inherits the current chat's model; resolve `arena cross-judge pool` through pstack-harness only for its effort. This is independent same-model judgment, not a judge from another vendor, so never describe it as model diversity. If the host cannot spawn the judge, skip it, pick the base alone in Phase D, and say so. ",
+                "arena cross-judge selection paragraph",
+            )
         if path.parent.name == "poteto-mode":
             body = replace_once(
                 body,

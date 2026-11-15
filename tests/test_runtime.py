@@ -51,6 +51,37 @@ class RuntimeTests(unittest.TestCase):
                     pstack.validate_bundle()
             path.write_bytes(original)
 
+    def test_unadapted_models_and_missing_plain_text_references_fail_validation(self) -> None:
+        bundle = self.root / "skills"
+        shutil.copytree(ROOT / "skills", bundle, ignore=shutil.ignore_patterns("node_modules"))
+        path = bundle / "arena/SKILL.md"
+        original = path.read_text()
+        for addition, message in [("Use gemini-4-carbon-high.", "unadapted"),
+                                  ("Use claude-fable-5-2-high.", "unadapted"),
+                                  ("Read references/missing-prompt.md first.", "broken plain-text reference")]:
+            path.write_text(original + "\n" + addition + "\n")
+            with self.subTest(addition=addition), patch.object(pstack, "skills_root", return_value=bundle):
+                with self.assertRaisesRegex(ValueError, message):
+                    pstack.validate_bundle()
+        path.write_text(original)
+
+    def test_generated_arena_judges_on_the_current_chat_model(self) -> None:
+        text = (ROOT / "skills/arena/SKILL.md").read_text()
+        self.assertIn("independent same-model judgment", text)
+        self.assertNotIn("never from the parent's vendor", text)
+        self.assertNotRegex(text, r"gemini-|claude-fable-")
+
+    def test_retired_roles_stay_readable_but_do_not_resolve(self) -> None:
+        config = {"version": 1, "codex": {"roles": {"how explorer": {"effort": "high"},
+                                                    "feature": {"effort": "low"}}},
+                  "claude-code": {"roles": {"why synthesizer": {"model": "opus"}}}}
+        pstack.validate_config(config)
+        self.assertEqual(pstack.retired_roles(config), ["how explorer", "why synthesizer"])
+        self.config(self.root, config)
+        self.assertEqual(pstack.resolve("codex", self.root, "feature", self.root / "user")[0]["effort"], "low")
+        with self.assertRaisesRegex(ValueError, "retired role: how explorer"):
+            pstack.resolve("codex", self.root, "how explorer", self.root / "user")
+
     def test_session_defaults_keep_two_panel_arms(self) -> None:
         arms = pstack.resolve("codex", self.root, "interrogate reviewers", self.root / "user")
         self.assertEqual([arm["arm"] for arm in arms], [1, 2])
@@ -225,22 +256,26 @@ class RuntimeTests(unittest.TestCase):
                     self.assertTrue((link / "SKILL.md").is_file())
         self.assertFalse((self.root / ".codex/skills").exists())
 
-    @unittest.skipUnless(shutil.which("node"), "Node is required for the statechart CLI")
-    def test_installed_statechart_help_and_invalid_input_need_no_optional_tools(self) -> None:
+    @unittest.skipUnless(any(shutil.which(name) for name in ("node", "bun", "deno")),
+                         "Node, Bun, or Deno is required for the statechart CLI")
+    def test_installed_statechart_rejects_bad_input_without_optional_tools(self) -> None:
         pstack.install(self.root, list(pstack.HOSTS))
-        script = self.root / ".agents/skills/statechart/scripts/statechart.mjs"
-        for arguments, expected in [(["--help"], 0), (["from-spec", "--nope"], 2)]:
+        script = self.root / ".agents/skills/statechart/scripts/statechart"
+        self.assertTrue(script.stat().st_mode & 0o111)
+        # Each case fails before the launcher reaches TLC, Java, or the mise installer.
+        for arguments, message in [([], "Give one SPEC.tla."),
+                                   (["Spec.tla", "--nope"], "Usage: statechart SPEC.tla"),
+                                   (["Missing.tla"], "Cannot find the TLC config Missing.cfg")]:
             with self.subTest(arguments=arguments):
-                run = subprocess.run([shutil.which("node"), str(script), *arguments],
-                                     cwd=self.root, capture_output=True, text=True, timeout=10)
-                self.assertEqual(run.returncode, expected, run.stderr)
-                if expected == 0:
-                    self.assertIn("from-spec", run.stdout)
-                    self.assertIn("from-chart", run.stdout)
-                    self.assertEqual(run.stderr, "")
-                else:
-                    self.assertIn("unknown argument --nope", run.stderr)
-                    self.assertEqual(run.stdout, "")
+                run = subprocess.run([str(script), *arguments], cwd=self.root,
+                                     capture_output=True, text=True, timeout=30)
+                if run.returncode == 127:
+                    self.skipTest(run.stderr.strip())
+                self.assertEqual(run.returncode, 2, run.stderr)
+                self.assertIn(message, run.stderr)
+                self.assertEqual(run.stdout, "")
+        self.assertEqual(sorted(path.name for path in self.root.iterdir() if path.suffix == ".tla"
+                                or path.name.endswith("-chart")), [])
 
     def test_installed_helpers_run_and_reinstall_restores_executability(self) -> None:
         unrelated = self.root / "own-script.sh"

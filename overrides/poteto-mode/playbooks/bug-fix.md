@@ -6,8 +6,8 @@ its [effort contract](../../pstack-harness/SKILL.md#task-difficulty-and-effort).
 
 1. Reproduce through the real entry point. Capture the failing behavior, input,
    and expected result. A missing target is unresolved, not a successful repro.
-2. Trace the mechanism through source, callers, and runtime evidence. Use how;
-   use why for history when available. Partition plausible causes into testable
+2. Trace the mechanism yourself through source, callers, and runtime evidence;
+   use why for regression history when available. Partition plausible causes into testable
    hypotheses and eliminate them systematically. Instrument the relevant values
    at runtime to prove the cause; source inference alone does not prove a runtime
    defect. Revert experimental changes for disproved hypotheses. If reproduction
@@ -25,5 +25,5 @@ its [effort contract](../../pstack-harness/SKILL.md#task-difficulty-and-effort).
    available. Apply evidence-backed fixes and repeat affected checks. Report any
    missing independent verification honestly. Apply deslop and no-comments to
    changed code when they expose unnecessary complexity; preserve useful contracts.
-6. Report root cause, fix, actual failing/passing outputs, review, and limitations.
+6. Open the report with the user's goal, then give the root cause, fix, actual failing/passing outputs, review, and limitations.
    Commit, open a PR, or publish only when within the user's requested scope.

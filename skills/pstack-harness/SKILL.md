@@ -118,6 +118,21 @@ test that did not run assertions is not proof. Read-only investigation and revie
 may run safe commands but must not edit project files. Preserve explicit scope;
 the skill's autonomy language never grants external actions on its own.
 
+## Orchestrate
+
+The Orchestrate playbook names Cursor features: the Project tracker (`notes.md`),
+the Project store, PR and CI event subscriptions, and cloud workers. None are
+portable. Keep the program's state in a `notes.md` the user approves, in a
+scratch or project location outside managed bundle paths, and re-read it after
+compaction. Use local workers in isolated worktrees as described above. Without
+event subscriptions, check live PR state with `gh pr view` and `gh pr checks`
+when the user's scope includes the forge, or with the bundled
+`poteto-mode/scripts/watch-pr/watch-pr` helper in `--status-only` mode. Do not
+start unattended polling loops, timers, merges, or pushes because the playbook
+describes a standing program.
+A verifier "on a different model family" is an independent same-model verifier
+here; say so.
+
 ## Skill changes and optional runtimes
 
 Before applying an approved reflection edit, identify the skill's actual source
@@ -130,10 +145,11 @@ skill copy, choose an unmanaged project or user skill directory and preserve
 existing managed links and unrelated skills. Reflection still requires approval
 of the accepted edits and does not open a PR or push.
 
-The `statechart` skill bundles Node scripts, not TLC, Java, or the PNG renderer.
-Its model commands can install TLC and Java with mise, and PNG rendering can
-download Pele and resvg with npm into a runtime cache. Importing the skill does
-not run those installers or verify a model. Keep validation in disposable
+The `statechart` skill bundles a POSIX launcher, `scripts/statechart`, that runs
+its TypeScript with Node 22.18+ (or 23.6+), Bun 1.1.5+, or Deno 2.0+ and no build
+step. It does not bundle TLC or Java: its first model check installs them with
+mise and needs the network. Importing the skill does not run that installer or
+verify a model. Keep validation in disposable
 fixtures with isolated caches. Use only the runtime work authorized by the task.
 The `ketchup-video` skill needs local video rendering tools. When the host cannot
 embed a video, provide the actual file and keep waiting decisions readable in

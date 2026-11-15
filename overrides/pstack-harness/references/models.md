@@ -33,9 +33,12 @@ low, medium, high, xhigh, max, and (Codex only) ultra when the selected model
 supports it. Effort changes do not select another model. No provider crossing is implicit.
 
 Code roles: feature, refactoring, bug-fix, perf-issue, hillclimb, swarm workers.
-Judgment roles: judgment and prose, hardest tasks, how explainer, why synthesizer,
-reflect judgment, reflect divergent, reflect synthesizer, trail reviewer.
-Other roles: default, how explorer, why investigators, reflect tooling.
+Judgment roles: judgment and prose, hardest tasks, reflect judgment, reflect
+divergent, reflect synthesizer, trail reviewer.
+Other roles: default, reflect tooling.
+Retired roles: how explorer, how explainer, why investigators, why synthesizer.
+Upstream no longer delegates them. Existing configs that name them stay valid;
+`validate-config` lists them under `retired_roles`, and `resolve` rejects them.
 Panels: arena runners, arena cross-judge pool, architect runners, interrogate reviewers.
 
 The resolver never escalates effort, selects a different model, or changes host

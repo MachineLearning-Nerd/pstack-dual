@@ -102,7 +102,7 @@ wrappers contain machine-local absolute paths. Regenerate wrappers on each machi
 
 The immutable upstream snapshot and commit are recorded in `upstream.lock.json`.
 Edit `overrides/` or `tools/build.py`, then regenerate the adapted bundle.
-The current source is pstack 0.15.32. All 58 original skills are included, with
+The current source is pstack 0.15.42. All 58 original skills are included, with
 portable overrides for the hosts. See [the complete comparison](docs/PARITY.md)
 for workflow differences and decisions. Use `$ketchup` in Codex or `/ketchup`
 in Claude to catch up on the current chat and pending decisions. Catch-ups now
@@ -111,11 +111,11 @@ Use `$in-your-own-words` to check the agent's understanding of your goal, or
 `$sharpen` to return an improved prompt without executing its task. Use
 `$create-formal-verification-skill` for a reusable check of a race or invariant,
 and `$maintain-formal-verification-skill` when its covered code changes.
-Use `$statechart` to explain model states and bug paths as charts. Its Node scripts
-are included, while TLC, Java, and the optional PNG renderer need separate runtime
-setup. Use `$ketchup-video` for a silent video recap when local video tools and
+Use `$statechart` to check a TLA+ model and chart the shortest path to each broken
+rule. Its launcher needs Node 22.18+, Bun, or Deno; TLC and Java need separate
+runtime setup. Use `$ketchup-video` for a subtitled video recap when local video tools and
 host presentation are available. Importing skills does not install those tools.
-See [each reviewed release](docs/RELEASES.md) for the 0.15.26 through 0.15.32
+See [each reviewed release](docs/RELEASES.md) for the 0.15.26 through 0.15.42
 changes, adopted behavior and intentional host differences. Updates require
 fresh source-hash reviews for exceptional files in `upstream-reviews.json`.
 See [porting decisions](docs/PORTING.md), [verification](docs/VERIFICATION.md),
