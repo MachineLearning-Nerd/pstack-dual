@@ -39,6 +39,11 @@ user sees as a Mermaid chart, with the shortest path to each state that breaks a
 rule. Its TypeScript launcher is bundled and needs Node 22.18+, Bun 1.1.5+, or
 Deno 2.0+. TLC and Java are separate runtime tools.
 
+Use [weed](../weed/SKILL.md) to find patterns agents copy, such as duplicates,
+escape hatches, and quick-fix patches. It migrates callers to one way, deletes
+the rest, and adds a lint rule whose message names the fix, then proves the rule
+fires. Use `/weed "<correction>"` to turn one correction into a rule.
+
 Core supported workflows are investigation (how), bug fix, feature, and read-only
 code review (pstack-review/interrogate). Interrogate keeps only findings an
 adversary proved with a run and the lead reproduced. Why answers from the commits

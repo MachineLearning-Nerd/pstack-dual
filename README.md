@@ -54,9 +54,10 @@ $poteto-mode Reproduce the duplicate-job bug, fix its root cause, and verify it.
 $poteto-mode Add CSV export and verify its output through the CLI.
 $pstack-review Review this branch against main. Remain read-only.
 $setup-pstack Check this project's pstack setup, efforts, and panel size.
+$weed Find the patterns agents copy here and lock the fixes in with lint rules.
 ```
 
-In Claude Code, use `/poteto-mode`, `/pstack-review`, and `/setup-pstack` instead.
+In Claude Code, use `/poteto-mode`, `/pstack-review`, `/setup-pstack`, and `/weed` instead.
 You can also explicitly use `how`, `architect`, or `interrogate` for focused work.
 Re-invoke the mode for a new task or after a session handoff. Upstream's custom
 mode frontmatter is a Cursor feature; it does not imply persistent host behavior.

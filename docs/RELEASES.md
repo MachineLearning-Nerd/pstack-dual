@@ -3,8 +3,8 @@
 The current pin is pstack **0.15.42**, official commit
 `bf0c7cd80abdbf7fe47b634978a7d1b4071f71a7`, observed on 2026-11-15.
 The original snapshot has 560 pstack files and 58 skills. Most of the growth is
-the statechart compiler's test corpus. With the six portable support skills, the
-generated bundle has 64 skills. The selected team-kit inputs add four files,
+the statechart compiler's test corpus. With the seven portable support skills, the
+generated bundle has 65 skills. The selected team-kit inputs add four files,
 making 564 locked files. File accounting is reproducible with
 `python3 tools/check_upstream.py --json`.
 

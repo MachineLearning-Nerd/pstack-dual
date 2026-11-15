@@ -262,6 +262,9 @@
     "poteto-mode/playbooks/code-review.md",
     "pstack-harness/SKILL.md",
     "pstack-harness/references/models.md",
-    "pstack-review/SKILL.md"
+    "pstack-review/SKILL.md",
+    "weed/SKILL.md",
+    "weed/references/audit.md",
+    "weed/references/stacks.md"
   ]
 }

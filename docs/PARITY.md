@@ -6,10 +6,11 @@ The complete pstack source is preserved in `upstream/pstack/`.
 `upstream.lock.json` records every imported file's hash.
 
 All 58 original top-level skills and all their supporting files are present in
-the generated package. The six additions are control-cli, control-ui, deslop,
-create-skill, pstack-harness, and pstack-review. The first three come from the
-same official Cursor commit. The other three provide portable authoring,
-host compatibility, and read-only review routing.
+the generated package. The seven additions are control-cli, control-ui, deslop,
+create-skill, pstack-harness, pstack-review, and weed. The first three come from
+the same official Cursor commit. The next three provide portable authoring,
+host compatibility, and read-only review routing. Weed turns the patterns agents
+copy into lint rules, following the encode-lessons-in-structure principle.
 
 File presence does not mean identical behavior. This audit compares source
 instructions and packaging. It does not prove every workflow runs on both hosts.
@@ -17,7 +18,7 @@ instructions and packaging. It does not prove every workflow runs on both hosts.
 ## The release changes are included
 
 The current snapshot preserves all 560 pstack source files. The generated bundle
-contains 64 skills. The required cursor-team-kit skills are unchanged from 0.15.25.
+contains 65 skills. The required cursor-team-kit skills are unchanged from 0.15.25.
 The [release-by-release review](RELEASES.md) accounts for 0.15.26 through 0.15.42,
 including both formal-verification skills, complete ketchup decision lists,
 sharpen's prompt-only contract, corrected principles and TypeScript guidance.
